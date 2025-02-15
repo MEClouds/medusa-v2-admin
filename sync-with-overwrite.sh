@@ -10,6 +10,7 @@ EXTRACTED_REPO_PATH="$(pwd)"  # Your repo
 # List of files to exclude
 EXCLUDE_FILES=(
     ".gitignore"
+    "node_modules"
     "sync-with-merge.sh"
     "sync-with-overwrite.sh"
     "README.md"
