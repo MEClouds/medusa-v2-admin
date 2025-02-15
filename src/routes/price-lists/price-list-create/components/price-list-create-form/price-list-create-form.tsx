@@ -249,12 +249,6 @@ export const PriceListCreateForm = ({
   return (
     <RouteFocusModal.Form form={form}>
       <ProgressTabs
-        dir={
-          document.documentElement.getAttribute("dir") as
-            | "ltr"
-            | "rtl"
-            | undefined
-        }
         value={tab}
         onValueChange={(tab) => handleChangeTab(tab as Tab)}
         className="flex h-full flex-col overflow-hidden"

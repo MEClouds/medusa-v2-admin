@@ -78,12 +78,6 @@ export const PriceListDetailsForm = ({ form }: PriceListDetailsFormProps) => {
                   </div>
                   <Form.Control>
                     <RadioGroup
-                      dir={
-                        document.documentElement.getAttribute("dir") as
-                          | "rtl"
-                          | "ltr"
-                          | undefined
-                      }
                       onValueChange={onChange}
                       {...rest}
                       className="grid grid-cols-1 gap-4 md:grid-cols-2"
@@ -139,16 +133,7 @@ export const PriceListDetailsForm = ({ form }: PriceListDetailsFormProps) => {
                       {t("priceLists.fields.status.label")}
                     </Form.Label>
                     <Form.Control>
-                      <Select
-                        dir={
-                          document.documentElement.getAttribute("dir") as
-                            | "rtl"
-                            | "ltr"
-                            | undefined
-                        }
-                        {...field}
-                        onValueChange={onChange}
-                      >
+                      <Select {...field} onValueChange={onChange}>
                         <Select.Trigger ref={ref}>
                           <Select.Value />
                         </Select.Trigger>

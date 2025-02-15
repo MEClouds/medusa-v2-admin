@@ -44,42 +44,33 @@ export const UserMenu = () => {
 
   return (
     <div>
-      <DropdownMenu
-        dir={
-          document.documentElement.getAttribute("dir") as
-            | "rtl"
-            | "ltr"
-            | undefined
-        }
-        open={openMenu}
-        onOpenChange={setOpenMenu}
-      >
+      <DropdownMenu open={openMenu} onOpenChange={setOpenMenu}>
         <UserBadge />
         <DropdownMenu.Content className="min-w-[var(--radix-dropdown-menu-trigger-width)] max-w-[var(--radix-dropdown-menu-trigger-width)]">
           <UserItem />
           <DropdownMenu.Separator />
           <DropdownMenu.Item asChild>
             <Link to="/settings/profile" state={{ from: location.pathname }}>
-              <UserIcon className="text-ui-fg-subtle me-2" />
+              <UserIcon className="text-ui-fg-subtle mr-2" />
               {t("app.menus.user.profileSettings")}
             </Link>
           </DropdownMenu.Item>
           <DropdownMenu.Separator />
           <DropdownMenu.Item asChild>
             <Link to="https://docs.medusajs.com" target="_blank">
-              <BookOpen className="text-ui-fg-subtle me-2" />
+              <BookOpen className="text-ui-fg-subtle mr-2" />
               {t("app.menus.user.documentation")}
             </Link>
           </DropdownMenu.Item>
           <DropdownMenu.Item asChild>
             <Link to="https://medusajs.com/changelog/" target="_blank">
-              <TimelineVertical className="text-ui-fg-subtle me-2" />
+              <TimelineVertical className="text-ui-fg-subtle mr-2" />
               {t("app.menus.user.changelog")}
             </Link>
           </DropdownMenu.Item>
           <DropdownMenu.Separator />
           <DropdownMenu.Item onClick={toggleModal}>
-            <Keyboard className="text-ui-fg-subtle me-2" />
+            <Keyboard className="text-ui-fg-subtle mr-2" />
             {t("app.menus.user.shortcuts")}
           </DropdownMenu.Item>
           <ThemeToggle />
@@ -158,7 +149,7 @@ const ThemeToggle = () => {
   return (
     <DropdownMenu.SubMenu>
       <DropdownMenu.SubMenuTrigger className="rounded-md">
-        <CircleHalfSolid className="text-ui-fg-subtle me-2" />
+        <CircleHalfSolid className="text-ui-fg-subtle mr-2" />
         {t("app.menus.user.theme.label")}
       </DropdownMenu.SubMenuTrigger>
       <DropdownMenu.SubMenuContent>

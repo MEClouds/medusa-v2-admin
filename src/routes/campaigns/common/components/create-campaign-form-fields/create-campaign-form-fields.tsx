@@ -209,12 +209,6 @@ export const CreateCampaignFormFields = ({ form, fieldScope = "" }) => {
 
               <Form.Control>
                 <RadioGroup
-                  dir={
-                    document.documentElement.getAttribute("dir") as
-                      | "rtl"
-                      | "ltr"
-                      | undefined
-                  }
                   className="flex gap-y-3"
                   {...field}
                   onValueChange={field.onChange}
@@ -258,12 +252,6 @@ export const CreateCampaignFormFields = ({ form, fieldScope = "" }) => {
                   </Form.Label>
                   <Form.Control>
                     <Select
-                      dir={
-                        document.documentElement.getAttribute("dir") as
-                          | "rtl"
-                          | "ltr"
-                          | undefined
-                      }
                       {...field}
                       onValueChange={onChange}
                       disabled={!!fieldScope.length}

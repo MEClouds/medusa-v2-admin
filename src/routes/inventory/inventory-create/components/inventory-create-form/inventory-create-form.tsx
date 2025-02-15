@@ -201,12 +201,6 @@ export function InventoryCreateForm({ locations }: InventoryCreateFormProps) {
   return (
     <RouteFocusModal.Form form={form}>
       <ProgressTabs
-        dir={
-          document.documentElement.getAttribute("dir") as
-            | "ltr"
-            | "rtl"
-            | undefined
-        }
         value={tab}
         className="h-full"
         onValueChange={(tab) => onTabChange(tab as Tab)}

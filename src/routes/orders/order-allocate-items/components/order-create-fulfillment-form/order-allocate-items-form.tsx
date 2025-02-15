@@ -219,15 +219,7 @@ export function OrderAllocateItemsForm({ order }: OrderAllocateItemsFormProps) {
                             </div>
                             <div className="flex-1">
                               <Form.Control>
-                                <Select
-                                  dir={
-                                    document.documentElement.getAttribute(
-                                      "dir"
-                                    ) as "rtl" | "ltr" | undefined
-                                  }
-                                  onValueChange={onChange}
-                                  {...field}
-                                >
+                                <Select onValueChange={onChange} {...field}>
                                   <Select.Trigger
                                     className="bg-ui-bg-base"
                                     ref={ref}

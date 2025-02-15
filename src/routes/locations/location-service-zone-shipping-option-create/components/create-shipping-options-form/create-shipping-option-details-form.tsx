@@ -98,12 +98,6 @@ export const CreateShippingOptionDetailsForm = ({
                   </Form.Label>
                   <Form.Control>
                     <RadioGroup
-                      dir={
-                        document.documentElement.getAttribute("dir") as
-                          | "rtl"
-                          | "ltr"
-                          | undefined
-                      }
                       className="grid grid-cols-1 gap-4 md:grid-cols-2"
                       {...field}
                       onValueChange={field.onChange}
@@ -226,12 +220,6 @@ export const CreateShippingOptionDetailsForm = ({
                   </Form.Label>
                   <Form.Control>
                     <Select
-                      dir={
-                        document.documentElement.getAttribute("dir") as
-                          | "rtl"
-                          | "ltr"
-                          | undefined
-                      }
                       {...field}
                       onValueChange={field.onChange}
                       disabled={!selectedProviderId}

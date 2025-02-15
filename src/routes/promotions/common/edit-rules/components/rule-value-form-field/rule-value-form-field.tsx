@@ -108,12 +108,6 @@ export const RuleValueFormField = ({
             <Form.Item className="basis-1/2">
               <Form.Control>
                 <Select
-                  dir={
-                    document.documentElement.getAttribute("dir") as
-                      | "rtl"
-                      | "ltr"
-                      | undefined
-                  }
                   {...field}
                   value={
                     Array.isArray(field.value) ? field.value[0] : field.value

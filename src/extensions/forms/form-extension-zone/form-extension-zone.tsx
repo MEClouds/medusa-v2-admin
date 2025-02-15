@@ -100,7 +100,7 @@ const FormExtensionFieldComponent = ({
       return <Input {...field} placeholder={placeholder} type="number" />
     }
     case "boolean": {
-      return <Switch className="rtl:rotate-180" dir="ltr" {...field} />
+      return <Switch {...field} />
     }
     default: {
       return (

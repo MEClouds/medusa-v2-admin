@@ -248,12 +248,6 @@ export const ProductCreateForm = ({
         className="flex h-full flex-col"
       >
         <ProgressTabs
-          dir={
-            document.documentElement.getAttribute("dir") as
-              | "ltr"
-              | "rtl"
-              | undefined
-          }
           value={tab}
           onValueChange={async (tab) => {
             const valid = await form.trigger()

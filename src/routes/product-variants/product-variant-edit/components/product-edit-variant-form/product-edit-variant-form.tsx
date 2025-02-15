@@ -269,9 +269,7 @@ export const ProductEditVariantForm = ({
                         </Form.Label>
                         <Form.Control>
                           <Switch
-                            dir="ltr"
                             checked={value}
-                            className="rtl:rotate-180"
                             onCheckedChange={(checked) => onChange(!!checked)}
                             {...field}
                           />
@@ -299,8 +297,6 @@ export const ProductEditVariantForm = ({
                         </Form.Label>
                         <Form.Control>
                           <Switch
-                            dir="ltr"
-                            className="rtl:rotate-180"
                             checked={value}
                             onCheckedChange={(checked) => onChange(!!checked)}
                             {...field}

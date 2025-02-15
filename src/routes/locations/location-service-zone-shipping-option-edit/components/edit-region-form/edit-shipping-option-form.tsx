@@ -128,16 +128,7 @@ export const EditShippingOptionForm = ({
                           )}
                         </Form.Label>
                         <Form.Control>
-                          <RadioGroup
-                            dir={
-                              document.documentElement.getAttribute("dir") as
-                                | "rtl"
-                                | "ltr"
-                                | undefined
-                            }
-                            {...field}
-                            onValueChange={field.onChange}
-                          >
+                          <RadioGroup {...field} onValueChange={field.onChange}>
                             <RadioGroup.ChoiceBox
                               className="flex-1"
                               value={ShippingOptionPriceType.FlatRate}

@@ -129,13 +129,8 @@ export const CreateCategoryForm = ({
         onSubmit={handleSubmit}
         className="flex size-full flex-col overflow-hidden"
       >
-         <ProgressTabs
-        dir={
-          document.documentElement.getAttribute("dir") as
-            | "ltr"
-            | "rtl"
-            | undefined
-        }value={activeTab}
+        <ProgressTabs
+          value={activeTab}
           onValueChange={(tab) => handleTabChange(tab as Tab)}
           className="flex size-full flex-col"
         >

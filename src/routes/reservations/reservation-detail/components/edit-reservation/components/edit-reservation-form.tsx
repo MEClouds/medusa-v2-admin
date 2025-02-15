@@ -102,12 +102,6 @@ export const EditReservationForm = ({
                   <Form.Label>{t("inventory.reservation.location")}</Form.Label>
                   <Form.Control>
                     <Select
-                      dir={
-                        document.documentElement.getAttribute("dir") as
-                          | "rtl"
-                          | "ltr"
-                          | undefined
-                      }
                       value={value}
                       onValueChange={(v) => {
                         onChange(v)

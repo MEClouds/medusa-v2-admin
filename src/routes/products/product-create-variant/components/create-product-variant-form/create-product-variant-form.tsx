@@ -75,13 +75,10 @@ export const CreateProductVariantForm = ({
       return {}
     }
 
-    return regions.reduce(
-      (acc, reg) => {
-        acc[reg.id] = reg.currency_code
-        return acc
-      },
-      {} as Record<string, string>
-    )
+    return regions.reduce((acc, reg) => {
+      acc[reg.id] = reg.currency_code
+      return acc
+    }, {} as Record<string, string>)
   }, [regions])
 
   const isManageInventoryEnabled = useWatch({
@@ -260,12 +257,6 @@ export const CreateProductVariantForm = ({
   return (
     <RouteFocusModal.Form form={form}>
       <ProgressTabs
-        dir={
-          document.documentElement.getAttribute("dir") as
-            | "ltr"
-            | "rtl"
-            | undefined
-        }
         value={tab}
         onValueChange={(tab) => handleChangeTab(tab as Tab)}
         className="flex h-full flex-col overflow-hidden"

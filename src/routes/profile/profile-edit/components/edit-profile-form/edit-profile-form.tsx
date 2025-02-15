@@ -111,16 +111,7 @@ export const EditProfileForm = ({ user }: EditProfileProps) => {
                   </div>
                   <div>
                     <Form.Control>
-                      <Select
-                        dir={
-                          document.documentElement.getAttribute("dir") as
-                            | "rtl"
-                            | "ltr"
-                            | undefined
-                        }
-                        {...field}
-                        onValueChange={field.onChange}
-                      >
+                      <Select {...field} onValueChange={field.onChange}>
                         <Select.Trigger ref={ref} className="py-1 text-[13px]">
                           <Select.Value
                             placeholder={t("profile.edit.languagePlaceholder")}
@@ -160,8 +151,7 @@ export const EditProfileForm = ({ user }: EditProfileProps) => {
                       {t("profile.fields.usageInsightsLabel")}
                     </Form.Label>
                     <Form.Control>
-                      <Switch dir="ltr"
-                        className="rtl:rotate-180"
+                      <Switch
                         {...rest}
                         checked={value}
                         onCheckedChange={onChange}

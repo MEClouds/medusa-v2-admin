@@ -106,10 +106,9 @@ const OuterComponent = ({
     >
       <div className="absolute inset-y-0 left-4 z-[3] flex w-fit items-center justify-center">
         <Switch
-          dir="ltr"
           ref={buttonRef}
           size="small"
-          className="shrink-0 rtl:rotate-180"
+          className="shrink-0"
           checked={localValue.checked}
           disabled={localValue.disabledToggle}
           onCheckedChange={handleCheckedChange}

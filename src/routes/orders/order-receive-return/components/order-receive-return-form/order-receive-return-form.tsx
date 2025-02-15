@@ -345,8 +345,7 @@ export function OrderReceiveReturnForm({
                     <div className="flex items-center gap-3">
                       <Form.Control>
                         <Switch
-                          dir="ltr"
-                          className="mt-1 self-start rtl:rotate-180"
+                          className="mt-1 self-start"
                           checked={!!value}
                           onCheckedChange={onChange}
                           {...field}

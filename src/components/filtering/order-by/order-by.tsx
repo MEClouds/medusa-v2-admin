@@ -99,14 +99,7 @@ export const OrderBy = ({ keys }: OrderByProps) => {
   }
 
   return (
-    <DropdownMenu
-      dir={
-        document.documentElement.getAttribute("dir") as
-          | "rtl"
-          | "ltr"
-          | undefined
-      }
-    >
+    <DropdownMenu>
       <DropdownMenu.Trigger asChild>
         <IconButton size="small">
           <ArrowUpDown />

@@ -239,15 +239,7 @@ export function OrderCreateFulfillmentForm({
                             </div>
                             <div className="flex-1">
                               <Form.Control>
-                                <Select
-                                  dir={
-                                    document.documentElement.getAttribute(
-                                      "dir"
-                                    ) as "rtl" | "ltr" | undefined
-                                  }
-                                  onValueChange={onChange}
-                                  {...field}
-                                >
+                                <Select onValueChange={onChange} {...field}>
                                   <Select.Trigger
                                     className="bg-ui-bg-base"
                                     ref={ref}
@@ -291,11 +283,6 @@ export function OrderCreateFulfillmentForm({
                             <div className="flex-1">
                               <Form.Control>
                                 <Select
-                                  dir={
-                                    document.documentElement.getAttribute(
-                                      "dir"
-                                    ) as "rtl" | "ltr" | undefined
-                                  }
                                   onValueChange={onChange}
                                   {...field}
                                   disabled={!selectedLocationId}
@@ -398,8 +385,6 @@ export function OrderCreateFulfillmentForm({
                             <Form.Control>
                               <Form.Control>
                                 <Switch
-                                  dir="ltr"
-                                  className="rtl:rotate-180"
                                   checked={!!value}
                                   onCheckedChange={onChange}
                                   {...field}

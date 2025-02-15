@@ -182,16 +182,7 @@ export const AddressForm = ({
                   <Form.Label>{t("fields.country")}</Form.Label>
                   <Form.Control>
                     {countries ? (
-                      <Select
-                        dir={
-                          document.documentElement.getAttribute("dir") as
-                            | "rtl"
-                            | "ltr"
-                            | undefined
-                        }
-                        {...field}
-                        onValueChange={onChange}
-                      >
+                      <Select {...field} onValueChange={onChange}>
                         <Select.Trigger ref={ref}>
                           <Select.Value />
                         </Select.Trigger>

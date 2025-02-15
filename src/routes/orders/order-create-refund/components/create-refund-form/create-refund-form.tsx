@@ -102,12 +102,6 @@ export const CreateRefundForm = ({
         <RouteDrawer.Body className="flex-1 overflow-auto">
           <div className="flex flex-col gap-y-4">
             <Select
-              dir={
-                document.documentElement.getAttribute("dir") as
-                  | "rtl"
-                  | "ltr"
-                  | undefined
-              }
               value={payment?.id}
               onValueChange={(value) => {
                 navigate(`/orders/${order.id}/refund?paymentId=${value}`, {

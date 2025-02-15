@@ -487,11 +487,6 @@ export const TaxRegionTaxOverrideEditForm = ({
                               <div className="text-ui-fg-subtle grid gap-1.5 px-1.5 md:grid-cols-2">
                                 {isLast ? (
                                   <Select
-                                    dir={
-                                      document.documentElement.getAttribute(
-                                        "dir"
-                                      ) as "rtl" | "ltr" | undefined
-                                    }
                                     value={type}
                                     onValueChange={handleChangeType}
                                   >

@@ -45,14 +45,7 @@ export const ActionMenu = ({
   )
 
   return (
-    <DropdownMenu
-      dir={
-        document.documentElement.getAttribute("dir") as
-          | "rtl"
-          | "ltr"
-          | undefined
-      }
-    >
+    <DropdownMenu>
       <DropdownMenu.Trigger asChild>{inner}</DropdownMenu.Trigger>
       <DropdownMenu.Content>
         {groups.map((group, index) => {

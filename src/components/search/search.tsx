@@ -376,14 +376,7 @@ const CommandInput = forwardRef<
     return (
       <div className="flex flex-col border-b">
         <div className="px-4 pt-4">
-          <DropdownMenu
-            dir={
-              document.documentElement.getAttribute("dir") as
-                | "rtl"
-                | "ltr"
-                | undefined
-            }
-          >
+          <DropdownMenu>
             <DropdownMenu.Trigger asChild>
               <Badge
                 size="2xsmall"

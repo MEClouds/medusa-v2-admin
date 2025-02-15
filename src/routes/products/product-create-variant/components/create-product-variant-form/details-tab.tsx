@@ -99,8 +99,7 @@ function DetailsTab({ form, product }: DetailsTabProps) {
                   <div className="bg-ui-bg-component shadow-elevation-card-rest flex gap-x-3 rounded-lg p-4">
                     <Form.Control>
                       <Switch
-                        dir="ltr"
-                        className="mt-[2px] rtl:rotate-180"
+                        className="mt-[2px]"
                         checked={value}
                         onCheckedChange={(checked) => onChange(!!checked)}
                         {...field}
@@ -131,8 +130,6 @@ function DetailsTab({ form, product }: DetailsTabProps) {
                   <div className="bg-ui-bg-component shadow-elevation-card-rest flex gap-x-3 rounded-lg p-4">
                     <Form.Control>
                       <Switch
-                        dir="ltr"
-                        className="rtl:rotate-180"
                         checked={value}
                         onCheckedChange={(checked) => onChange(!!checked)}
                         {...field}
@@ -162,8 +159,6 @@ function DetailsTab({ form, product }: DetailsTabProps) {
                   <div className="bg-ui-bg-component shadow-elevation-card-rest flex gap-x-3 rounded-lg p-4">
                     <Form.Control>
                       <Switch
-                        dir="ltr"
-                        className="rtl:rotate-180"
                         checked={value}
                         onCheckedChange={(checked) => onChange(!!checked)}
                         {...field}

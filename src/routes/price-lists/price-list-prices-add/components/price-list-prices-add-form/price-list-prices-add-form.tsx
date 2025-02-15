@@ -90,13 +90,10 @@ export const PriceListPricesAddForm = ({
   ) => {
     form.clearErrors(fields)
 
-    const values = fields.reduce(
-      (acc, key) => {
-        acc[key] = form.getValues(key)
-        return acc
-      },
-      {} as Record<string, unknown>
-    )
+    const values = fields.reduce((acc, key) => {
+      acc[key] = form.getValues(key)
+      return acc
+    }, {} as Record<string, unknown>)
 
     const validationResult = schema.safeParse(values)
 
@@ -199,12 +196,6 @@ export const PriceListPricesAddForm = ({
   return (
     <RouteFocusModal.Form form={form}>
       <ProgressTabs
-        dir={
-          document.documentElement.getAttribute("dir") as
-            | "ltr"
-            | "rtl"
-            | undefined
-        }
         value={tab}
         onValueChange={(tab) => handleChangeTab(tab as Tab)}
         className="flex h-full flex-col overflow-hidden"

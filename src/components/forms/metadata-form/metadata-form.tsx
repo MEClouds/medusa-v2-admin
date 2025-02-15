@@ -215,14 +215,7 @@ const InnerForm = <TRes,>({
                         }}
                       />
                     </div>
-                    <DropdownMenu
-                      dir={
-                        document.documentElement.getAttribute("dir") as
-                          | "rtl"
-                          | "ltr"
-                          | undefined
-                      }
-                    >
+                    <DropdownMenu>
                       <DropdownMenu.Trigger
                         className={clx(
                           "invisible absolute inset-y-0 -right-2.5 my-auto group-hover/table:visible data-[state='open']:visible",

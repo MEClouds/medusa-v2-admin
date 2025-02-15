@@ -20,10 +20,18 @@ echo "Merge complete. Resolve conflicts if necessary, then commit."
 
 # Step 5: Commit & push changes (if any)
 if ! git diff --quiet; then
-    git add .
-    git commit -m "Merged latest changes from monorepo on $(date)"
-    git push origin main  # Adjust branch if necessary
-    echo "Changes pushed!"
+    read -p "Do you want to commit changes and push to main? (y/n): " choice
+    if [[ "$choice" == [Yy]* ]]; then
+        git add .
+        git commit -m "Merged latest changes from monorepo on $(date)"
+        git push origin main  # Adjust branch if necessary
+        echo "Changes pushed!"
+    else
+        echo "Changes not pushed."
+    fi
+else
+    echo "No new changes to commit."
+fi
 else
     echo "No new changes to commit."
 fi

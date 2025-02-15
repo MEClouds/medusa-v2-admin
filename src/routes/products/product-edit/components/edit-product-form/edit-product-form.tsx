@@ -99,16 +99,7 @@ export const EditProductForm = ({ product }: EditProductFormProps) => {
                     <Form.Item>
                       <Form.Label>{t("fields.status")}</Form.Label>
                       <Form.Control>
-                        <Select
-                          dir={
-                            document.documentElement.getAttribute("dir") as
-                              | "rtl"
-                              | "ltr"
-                              | undefined
-                          }
-                          {...field}
-                          onValueChange={onChange}
-                        >
+                        <Select {...field} onValueChange={onChange}>
                           <Select.Trigger ref={ref}>
                             <Select.Value />
                           </Select.Trigger>

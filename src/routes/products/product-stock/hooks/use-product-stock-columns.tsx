@@ -192,8 +192,7 @@ export const useProductStockColumns = (
                     return (
                       <div className="flex size-full items-center gap-x-2">
                         <Switch
-                          dir="ltr"
-                          className="shrink-0 cursor-not-allowed rtl:rotate-180"
+                          className="shrink-0 cursor-not-allowed"
                           tabIndex={-1}
                           size="small"
                           checked={checked}
