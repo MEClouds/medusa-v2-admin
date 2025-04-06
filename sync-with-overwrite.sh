@@ -3,7 +3,7 @@
 # Define variables
 MONOREPO_URL="https://github.com/medusajs/medusa.git"
 MONOREPO_PATH="/tmp/monorepo"  # Temporary clone location
-MONOREPO_BRANCH="develop"
+MONOREPO_BRANCH="origin/develop"
 MONOREPO_SUBFOLDER="packages/admin/dashboard"
 EXTRACTED_REPO_PATH="$(pwd)"  # Your repo
 
@@ -13,6 +13,7 @@ EXCLUDE_FILES=(
     "node_modules"
     "sync-with-merge.sh"
     "sync-with-overwrite.sh"
+    ".yarnrc.yml"
     "README.md"
 )
 
