@@ -3,7 +3,7 @@
 # Define variables
 MONOREPO_URL="https://github.com/medusajs/medusa.git"
 MONOREPO_PATH="/tmp/monorepo"  # Temporary clone location
-MONOREPO_BRANCH="origin/develop"
+MONOREPO_BRANCH="develop"
 MONOREPO_SUBFOLDER="packages/admin/dashboard"
 EXTRACTED_REPO_PATH="$(pwd)"  # Your repo
 
