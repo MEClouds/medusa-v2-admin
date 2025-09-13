@@ -13,6 +13,17 @@ export const InventoryItemGeneralSection = ({
   inventoryItem,
 }: InventoryItemGeneralSectionProps) => {
   const { t } = useTranslation()
+
+  const getQuantityFormat = (quantity: number) => {
+    if (quantity !== undefined && !isNaN(quantity)) {
+      return t("inventory.quantityAcrossLocations", {
+        quantity,
+        locations: inventoryItem.location_levels?.length,
+      })
+    }
+
+    return "-"
+  }
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
@@ -36,34 +47,19 @@ export const InventoryItemGeneralSection = ({
       <SectionRow title={t("fields.sku")} value={inventoryItem.sku ?? "-"} />
       <SectionRow
         title={t("fields.inStock")}
-        value={getQuantityFormat(
-          inventoryItem.stocked_quantity,
-          inventoryItem.location_levels?.length
-        )}
+        value={getQuantityFormat(inventoryItem.stocked_quantity)}
       />
 
       <SectionRow
         title={t("inventory.reserved")}
-        value={getQuantityFormat(
-          inventoryItem.reserved_quantity,
-          inventoryItem.location_levels?.length
-        )}
+        value={getQuantityFormat(inventoryItem.reserved_quantity)}
       />
       <SectionRow
         title={t("inventory.available")}
         value={getQuantityFormat(
-          inventoryItem.stocked_quantity - inventoryItem.reserved_quantity,
-          inventoryItem.location_levels?.length
+          inventoryItem.stocked_quantity - inventoryItem.reserved_quantity
         )}
       />
     </Container>
   )
-}
-
-const getQuantityFormat = (quantity: number, locations?: number) => {
-  if (quantity !== undefined && !isNaN(quantity)) {
-    return `${quantity} across ${locations ?? "-"} locations`
-  }
-
-  return "-"
 }

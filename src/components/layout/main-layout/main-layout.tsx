@@ -24,11 +24,12 @@ import { INavItem, NavItem } from "../../layout/nav-item"
 import { Shell } from "../../layout/shell"
 
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { useDashboardExtension } from "../../../extensions"
 import { useLogout } from "../../../hooks/api"
 import { queryClient } from "../../../lib/query-client"
+import { useExtension } from "../../../providers/extension-provider"
 import { useSearch } from "../../../providers/search-provider"
 import { UserMenu } from "../user-menu"
+import { useDocumentDirection } from "../../../hooks/use-document-direction"
 
 export const MainLayout = () => {
   return (
@@ -94,7 +95,7 @@ const Logout = () => {
 const Header = () => {
   const { t } = useTranslation()
   const { store, isPending, isError, error } = useStore()
-
+  const direction = useDocumentDirection()
   const name = store?.name
   const fallback = store?.name?.slice(0, 1).toUpperCase()
 
@@ -106,7 +107,8 @@ const Header = () => {
 
   return (
     <div className="w-full p-3">
-      <DropdownMenu>
+    <DropdownMenu
+          dir={direction}>
         <DropdownMenu.Trigger
           disabled={!isLoaded}
           className={clx(
@@ -283,7 +285,7 @@ const Searchbar = () => {
 const CoreRouteSection = () => {
   const coreRoutes = useCoreRoutes()
 
-  const { getMenu } = useDashboardExtension()
+  const { getMenu } = useExtension()
 
   const menuItems = getMenu("coreExtensions")
 
@@ -308,7 +310,7 @@ const CoreRouteSection = () => {
 
 const ExtensionRouteSection = () => {
   const { t } = useTranslation()
-  const { getMenu } = useDashboardExtension()
+  const { getMenu } = useExtension()
 
   const menuItems = getMenu("coreExtensions").filter((item) => !item.nested)
 

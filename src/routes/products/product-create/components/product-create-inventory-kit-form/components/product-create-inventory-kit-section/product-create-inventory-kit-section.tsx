@@ -9,6 +9,144 @@ import { Combobox } from "../../../../../../../components/inputs/combobox"
 import { useComboboxData } from "../../../../../../../hooks/use-combobox-data"
 import { sdk } from "../../../../../../../lib/client"
 
+type InventoryItemRowProps = {
+  form: UseFormReturn<ProductCreateSchemaType>
+  variantIndex: number
+  inventoryIndex: number
+  inventoryItem: any
+  isItemOptionDisabled: (
+    option: { value: string },
+    inventoryIndex: number
+  ) => boolean
+  onRemove: () => void
+}
+
+function InventoryItemRow({
+  form,
+  variantIndex,
+  inventoryIndex,
+  inventoryItem,
+  isItemOptionDisabled,
+  onRemove,
+}: InventoryItemRowProps) {
+  const { t } = useTranslation()
+
+  const selectedInventoryItemId = useWatch({
+    control: form.control,
+    name: `variants.${variantIndex}.inventory.${inventoryIndex}.inventory_item_id`,
+  })
+
+  const items = useComboboxData({
+    queryKey: ["inventory_items"],
+    defaultValueKey: "id",
+    selectedValue: selectedInventoryItemId,
+    queryFn: (params) => sdk.admin.inventoryItem.list(params),
+    getOptions: (data) =>
+      data.inventory_items.map((item) => ({
+        label: `${item.title} ${item.sku ? `(${item.sku})` : ""}`,
+        value: item.id,
+      })),
+  })
+
+  return (
+    <li
+      key={inventoryItem.id}
+      className="bg-ui-bg-component shadow-elevation-card-rest grid grid-cols-[1fr_28px] items-center gap-1.5 rounded-xl p-1.5"
+    >
+      <div className="grid grid-cols-[min-content,1fr] items-center gap-1.5">
+        <div className="flex items-center px-2 py-1.5">
+          <Label
+            size="xsmall"
+            weight="plus"
+            className="text-ui-fg-subtle"
+            htmlFor={`variants.${variantIndex}.inventory.${inventoryIndex}.inventory_item_id`}
+          >
+            {t("fields.item")}
+          </Label>
+        </div>
+
+        <Form.Field
+          control={form.control}
+          name={`variants.${variantIndex}.inventory.${inventoryIndex}.inventory_item_id`}
+          render={({ field }) => {
+            return (
+              <Form.Item>
+                <Form.Control>
+                  <Combobox
+                    {...field}
+                    options={items.options.map((o) => ({
+                      ...o,
+                      disabled: isItemOptionDisabled(o, inventoryIndex),
+                    }))}
+                    searchValue={items.searchValue}
+                    onBlur={() => items.onSearchValueChange("")}
+                    onSearchValueChange={items.onSearchValueChange}
+                    fetchNextPage={items.fetchNextPage}
+                    className="bg-ui-bg-field-component hover:bg-ui-bg-field-component-hover"
+                    placeholder={t("products.create.inventory.itemPlaceholder")}
+                  />
+                </Form.Control>
+              </Form.Item>
+            )
+          }}
+        />
+
+        <div className="flex items-center px-2 py-1.5">
+          <Label
+            size="xsmall"
+            weight="plus"
+            className="text-ui-fg-subtle"
+            htmlFor={`variants.${variantIndex}.inventory.${inventoryIndex}.required_quantity`}
+          >
+            {t("fields.quantity")}
+          </Label>
+        </div>
+        <Form.Field
+          control={form.control}
+          name={`variants.${variantIndex}.inventory.${inventoryIndex}.required_quantity`}
+          render={({ field: { onChange, value, ...field } }) => {
+            return (
+              <Form.Item>
+                <Form.Control>
+                  <Input
+                    type="number"
+                    className="bg-ui-bg-field-component"
+                    min={0}
+                    value={value}
+                    onChange={(e) => {
+                      const value = e.target.value
+
+                      if (value === "") {
+                        onChange(null)
+                      } else {
+                        onChange(Number(value))
+                      }
+                    }}
+                    {...field}
+                    placeholder={t(
+                      "products.create.inventory.quantityPlaceholder"
+                    )}
+                  />
+                </Form.Control>
+                <Form.ErrorMessage />
+              </Form.Item>
+            )
+          }}
+        />
+      </div>
+      <IconButton
+        type="button"
+        size="small"
+        variant="transparent"
+        className="text-ui-fg-muted"
+        onClick={onRemove}
+      >
+        <XMarkMini />
+      </IconButton>
+    </li>
+  )
+}
+
 type VariantSectionProps = {
   form: UseFormReturn<ProductCreateSchemaType>
   variant: ProductCreateSchemaType["variants"][0]
@@ -28,26 +166,14 @@ function VariantSection({ form, variant, index }: VariantSectionProps) {
     name: `variants.${index}.inventory`,
   })
 
-  const items = useComboboxData({
-    queryKey: ["inventory_items"],
-    queryFn: (params) => sdk.admin.inventoryItem.list(params),
-    getOptions: (data) =>
-      data.inventory_items.map((item) => ({
-        label: item.title,
-        value: item.id,
-      })),
-  })
-
   /**
    * Will mark an option as disabled if another input already selected that option
-   * @param option
-   * @param inventoryIndex
    */
   const isItemOptionDisabled = (
-    option: (typeof items.options)[0],
+    option: { value: string },
     inventoryIndex: number
   ) => {
-    return inventoryFormData?.some(
+    return !!inventoryFormData?.some(
       (i, index) =>
         index != inventoryIndex && i.inventory_item_id === option.value
     )
@@ -75,102 +201,15 @@ function VariantSection({ form, variant, index }: VariantSectionProps) {
         </Button>
       </div>
       {inventory.fields.map((inventoryItem, inventoryIndex) => (
-        <li
+        <InventoryItemRow
           key={inventoryItem.id}
-          className="bg-ui-bg-component shadow-elevation-card-rest grid grid-cols-[1fr_28px] items-center gap-1.5 rounded-xl p-1.5"
-        >
-          <div className="grid grid-cols-[min-content,1fr] items-center gap-1.5">
-            <div className="flex items-center px-2 py-1.5">
-              <Label
-                size="xsmall"
-                weight="plus"
-                className="text-ui-fg-subtle"
-                htmlFor={`variants.${index}.inventory.${inventoryIndex}.inventory_item_id`}
-              >
-                {t("fields.item")}
-              </Label>
-            </div>
-
-            <Form.Field
-              control={form.control}
-              name={`variants.${index}.inventory.${inventoryIndex}.inventory_item_id`}
-              render={({ field }) => {
-                return (
-                  <Form.Item>
-                    <Form.Control>
-                      <Combobox
-                        {...field}
-                        options={items.options.map((o) => ({
-                          ...o,
-                          disabled: isItemOptionDisabled(o, inventoryIndex),
-                        }))}
-                        searchValue={items.searchValue}
-                        onSearchValueChange={items.onSearchValueChange}
-                        fetchNextPage={items.fetchNextPage}
-                        className="bg-ui-bg-field-component hover:bg-ui-bg-field-component-hover"
-                        placeholder={t(
-                          "products.create.inventory.itemPlaceholder"
-                        )}
-                      />
-                    </Form.Control>
-                  </Form.Item>
-                )
-              }}
-            />
-
-            <div className="flex items-center px-2 py-1.5">
-              <Label
-                size="xsmall"
-                weight="plus"
-                className="text-ui-fg-subtle"
-                htmlFor={`variants.${index}.inventory.${inventoryIndex}.required_quantity`}
-              >
-                {t("fields.quantity")}
-              </Label>
-            </div>
-            <Form.Field
-              control={form.control}
-              name={`variants.${index}.inventory.${inventoryIndex}.required_quantity`}
-              render={({ field: { onChange, value, ...field } }) => {
-                return (
-                  <Form.Item>
-                    <Form.Control>
-                      <Input
-                        type="number"
-                        className="bg-ui-bg-field-component"
-                        min={0}
-                        value={value}
-                        onChange={(e) => {
-                          const value = e.target.value
-
-                          if (value === "") {
-                            onChange(null)
-                          } else {
-                            onChange(Number(value))
-                          }
-                        }}
-                        {...field}
-                        placeholder={t(
-                          "products.create.inventory.quantityPlaceholder"
-                        )}
-                      />
-                    </Form.Control>
-                    <Form.ErrorMessage />
-                  </Form.Item>
-                )
-              }}
-            />
-          </div>
-          <IconButton
-            type="button"
-            size="small"
-            variant="transparent"
-            className="text-ui-fg-muted"
-            onClick={() => inventory.remove(inventoryIndex)}
-          >
-            <XMarkMini />
-          </IconButton>
-        </li>
+          form={form}
+          variantIndex={index}
+          inventoryIndex={inventoryIndex}
+          inventoryItem={inventoryItem}
+          isItemOptionDisabled={isItemOptionDisabled}
+          onRemove={() => inventory.remove(inventoryIndex)}
+        />
       ))}
     </div>
   )

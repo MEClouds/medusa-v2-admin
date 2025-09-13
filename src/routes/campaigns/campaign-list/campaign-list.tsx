@@ -1,9 +1,9 @@
 import { SingleColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 import { CampaignListTable } from "./components/campaign-list-table"
 
 export const CampaignList = () => {
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   return (
     <SingleColumnPage

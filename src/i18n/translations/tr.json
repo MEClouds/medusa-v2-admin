@@ -537,18 +537,22 @@
     "fields": {
       "title": {
         "label": "Başlık",
-        "hint": "Ürününüz için kısa ve net bir başlık verin.<0/> Arama motorları için önerilen uzunluk 50-60 karakterdir."
+        "hint": "Ürününüz için kısa ve net bir başlık verin.<0/> Arama motorları için önerilen uzunluk 50-60 karakterdir.",
+        "placeholder": "Kışlık ceket"
       },
       "subtitle": {
-        "label": "Alt Başlık"
+        "label": "Alt Başlık",
+        "placeholder": "Sıcak ve rahat"
       },
       "handle": {
         "label": "Tutamak",
-        "tooltip": "Tutamak, ürünü mağazanızda referans almak için kullanılır. Belirtilmediğinde, ürün başlığından oluşturulacaktır."
+        "tooltip": "Tutamak, ürünü mağazanızda referans almak için kullanılır. Belirtilmediğinde, ürün başlığından oluşturulacaktır.",
+        "placeholder": "kışlık-ceket"
       },
       "description": {
         "label": "Açıklama",
-        "hint": "Ürününüz için kısa ve net bir açıklama verin.<0/> Arama motorları için önerilen uzunluk 120-160 karakterdir."
+        "hint": "Ürününüz için kısa ve net bir açıklama verin.<0/> Arama motorları için önerilen uzunluk 120-160 karakterdir.",
+        "placeholder": "Sıcak ve rahat bir ceket"
       },
       "discountable": {
         "label": "İndirim Uygulanabilir",

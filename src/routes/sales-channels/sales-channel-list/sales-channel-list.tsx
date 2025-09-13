@@ -1,10 +1,10 @@
 import { SalesChannelListTable } from "./components/sales-channel-list-table"
 
 import { SingleColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 
 export const SalesChannelList = () => {
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   return (
     <SingleColumnPage

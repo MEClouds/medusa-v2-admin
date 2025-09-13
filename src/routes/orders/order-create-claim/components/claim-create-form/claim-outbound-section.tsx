@@ -24,13 +24,14 @@ import {
   useRemoveClaimOutboundItem,
   useUpdateClaimOutboundItems,
 } from "../../../../../hooks/api/claims"
-import { useShippingOptions } from "../../../../../hooks/api/shipping-options"
 import { sdk } from "../../../../../lib/client"
 import { OutboundShippingPlaceholder } from "../../../common/placeholders"
 import { AddClaimOutboundItemsTable } from "../add-claim-outbound-items-table"
 import { ClaimOutboundItem } from "./claim-outbound-item"
 import { ItemPlaceholder } from "./item-placeholder"
 import { CreateClaimSchemaType } from "./schema"
+import { useOrderShippingOptions } from "../../../../../hooks/api/orders"
+import { getFormattedShippingOptionLocationName } from "../../../../../lib/shipping-options"
 
 type ClaimOutboundSectionProps = {
   order: AdminOrder
@@ -58,10 +59,13 @@ export const ClaimOutboundSection = ({
   /**
    * HOOKS
    */
-  const { shipping_options = [] } = useShippingOptions({
-    limit: 999,
-    fields: "*prices,+service_zone.fulfillment_set.location.id",
-  })
+  const { shipping_options = [] } = useOrderShippingOptions(order.id)
+
+  // TODO: filter in the API when boolean filter is supported and fulfillment module support partial rule SO filtering
+  const outboundShippingOptions = shipping_options.filter(
+    (so) =>
+      !so.rules?.find((r) => r.attribute === "is_return" && r.value === "true")
+  )
 
   const { mutateAsync: addOutboundShipping } = useAddClaimOutboundShipping(
     claim.id,
@@ -190,7 +194,9 @@ export const ClaimOutboundSection = ({
     setIsOpen("outbound-items", false)
   }
 
-  const onShippingOptionChange = async (selectedOptionId: string) => {
+  const onShippingOptionChange = async (
+    selectedOptionId: string | undefined
+  ) => {
     const outboundShippingMethods = preview.shipping_methods.filter((s) => {
       const action = s.actions?.find(
         (a) => a.action === "SHIPPING_ADD" && !a.return_id
@@ -213,14 +219,16 @@ export const ClaimOutboundSection = ({
 
     await Promise.all(promises)
 
-    await addOutboundShipping(
-      { shipping_option_id: selectedOptionId },
-      {
-        onError: (error) => {
-          toast.error(error.message)
-        },
-      }
-    )
+    if (selectedOptionId) {
+      await addOutboundShipping(
+        { shipping_option_id: selectedOptionId },
+        {
+          onError: (error) => {
+            toast.error(error.message)
+          },
+        }
+      )
+    }
   }
 
   const showLevelsWarning = useMemo(() => {
@@ -260,11 +268,12 @@ export const ClaimOutboundSection = ({
       const variantIds = outboundItems
         .map((item) => item?.variant_id)
         .filter(Boolean)
+
       const variants = (
-        await sdk.admin.productVariant.list(
-          { id: variantIds },
-          { fields: "*inventory,*inventory.location_levels" }
-        )
+        await sdk.admin.productVariant.list({
+          id: variantIds,
+          fields: "*inventory.location_levels",
+        })
       ).variants
 
       variants.forEach((variant) => {
@@ -395,17 +404,18 @@ export const ClaimOutboundSection = ({
                   <Form.Item>
                     <Form.Control>
                       <Combobox
+                        allowClear
                         value={value ?? undefined}
                         onChange={(val) => {
                           onChange(val)
-                          val && onShippingOptionChange(val)
+                          onShippingOptionChange(val)
                         }}
                         {...field}
-                        options={shipping_options.map((so) => ({
-                          label: so.name,
+                        options={outboundShippingOptions.map((so) => ({
+                          label: `${so.name} (${getFormattedShippingOptionLocationName(so)})`,
                           value: so.id,
                         }))}
-                        disabled={!shipping_options.length}
+                        disabled={!outboundShippingOptions.length}
                         noResultsPlaceholder={<OutboundShippingPlaceholder />}
                       />
                     </Form.Control>

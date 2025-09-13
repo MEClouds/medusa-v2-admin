@@ -1,6 +1,6 @@
 import { ReactNode, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 import {
   ArrowDownRightMini,
@@ -19,6 +19,7 @@ import {
   AdminOrderLineItem,
   AdminOrderPreview,
   AdminPaymentCollection,
+  AdminPlugin,
   AdminRegion,
   AdminReturn,
 } from "@medusajs/types"
@@ -37,7 +38,9 @@ import {
 } from "@medusajs/ui"
 
 import { AdminReservation } from "@medusajs/types/src/http"
+import { format } from "date-fns"
 import { ActionMenu } from "../../../../../components/common/action-menu"
+import DisplayId from "../../../../../components/common/display-id/display-id"
 import { Thumbnail } from "../../../../../components/common/thumbnail"
 import { useClaims } from "../../../../../hooks/api/claims"
 import { useExchanges } from "../../../../../hooks/api/exchanges"
@@ -46,30 +49,38 @@ import { useMarkPaymentCollectionAsPaid } from "../../../../../hooks/api/payment
 import { useReservationItems } from "../../../../../hooks/api/reservations"
 import { useReturns } from "../../../../../hooks/api/returns"
 import { useDate } from "../../../../../hooks/use-date"
+import { getTotalCreditLines } from "../../../../../lib/credit-line"
 import { formatCurrency } from "../../../../../lib/format-currency"
+import { getReservationsLimitCount } from "../../../../../lib/orders"
 import {
   getLocaleAmount,
   getStylizedAmount,
   isAmountLessThenRoundingError,
 } from "../../../../../lib/money-amount-helpers"
 import { getTotalCaptured } from "../../../../../lib/payment"
+import { getLoyaltyPlugin } from "../../../../../lib/plugins"
 import { getReturnableQuantity } from "../../../../../lib/rma"
 import { CopyPaymentLink } from "../copy-payment-link/copy-payment-link"
 import ReturnInfoPopover from "./return-info-popover"
 import ShippingInfoPopover from "./shipping-info-popover"
+import { formatPercentage } from "../../../../../lib/percentage-helpers.ts"
 
 type OrderSummarySectionProps = {
   order: AdminOrder
+  plugins: AdminPlugin[]
 }
 
-export const OrderSummarySection = ({ order }: OrderSummarySectionProps) => {
+export const OrderSummarySection = ({
+  order,
+  plugins,
+}: OrderSummarySectionProps) => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const prompt = usePrompt()
 
   const { reservations } = useReservationItems(
     {
       line_item_id: order?.items?.map((i) => i.id),
+      limit: getReservationsLimitCount(order),
     },
     { enabled: Array.isArray(order?.items) }
   )
@@ -115,7 +126,7 @@ export const OrderSummarySection = ({ order }: OrderSummarySectionProps) => {
     }
 
     return false
-  }, [reservations])
+  }, [order.items, reservations])
 
   const unpaidPaymentCollection = order.payment_collections.find(
     (pc) => pc.status === "not_paid"
@@ -134,8 +145,7 @@ export const OrderSummarySection = ({ order }: OrderSummarySectionProps) => {
 
   const showPayment =
     unpaidPaymentCollection && pendingDifference > 0 && isAmountSignificant
-  const showRefund =
-    unpaidPaymentCollection && pendingDifference < 0 && isAmountSignificant
+  const showRefund = pendingDifference < 0 && isAmountSignificant
 
   const handleMarkAsPaid = async (
     paymentCollection: AdminPaymentCollection
@@ -182,6 +192,7 @@ export const OrderSummarySection = ({ order }: OrderSummarySectionProps) => {
       <Header order={order} orderPreview={orderPreview} />
       <ItemBreakdown order={order} reservations={reservations!} />
       <CostBreakdown order={order} />
+      <DiscountAndTotalBreakdown order={order} plugins={plugins} />
       <Total order={order} />
 
       {(showAllocateButton || showReturns || showPayment || showRefund) && (
@@ -387,7 +398,9 @@ const Item = ({
 
   const isInventoryManaged = item.variant?.manage_inventory
   const hasInventoryKit =
-    isInventoryManaged && (item.variant?.inventory_items?.length || 0) > 1
+    isInventoryManaged &&
+    ((item.variant?.inventory_items?.length || 0) > 1 ||
+      item.variant?.inventory_items?.some((i) => i.required_quantity > 1))
   const hasUnfulfilledItems = item.quantity - item.detail.fulfilled_quantity > 0
 
   return (
@@ -399,12 +412,7 @@ const Item = ({
         <div className="flex items-start gap-x-4">
           <Thumbnail src={item.thumbnail} />
           <div>
-            <Text
-              size="small"
-              leading="compact"
-              weight="plus"
-              className="text-ui-fg-base"
-            >
+            <Text size="small" leading="compact" className="text-ui-fg-base">
               {item.title}
             </Text>
 
@@ -562,51 +570,39 @@ const CostBreakdown = ({
   const [isTaxOpen, setIsTaxOpen] = useState(false)
   const [isShippingOpen, setIsShippingOpen] = useState(false)
 
-  const discountCodes = useMemo(() => {
-    const codes = new Set()
-    order.items.forEach((item) =>
-      item.adjustments?.forEach((adj) => {
-        codes.add(adj.code)
-      })
-    )
-
-    return Array.from(codes).sort()
-  }, [order])
-
   const taxCodes = useMemo(() => {
-    const taxCodeMap = {}
+    const taxCodeMap: { [key: string]: { total: number; rate: number } } = {}
 
     order.items.forEach((item) => {
       item.tax_lines?.forEach((line) => {
-        taxCodeMap[line.code] = (taxCodeMap[line.code] || 0) + line.total
+        const prevTotal = taxCodeMap[line.code]?.total || 0
+        taxCodeMap[line.code] = {
+          total: prevTotal + line.subtotal,
+          rate: line.rate,
+        }
       })
     })
 
     order.shipping_methods.forEach((sm) => {
       sm.tax_lines?.forEach((line) => {
-        taxCodeMap[line.code] = (taxCodeMap[line.code] || 0) + line.total
+        const prevTotal = taxCodeMap[line.code]?.total || 0
+        taxCodeMap[line.code] = {
+          total: prevTotal + line.subtotal,
+          rate: line.rate,
+        }
       })
     })
 
     return taxCodeMap
   }, [order])
 
-  const automaticTaxesOn = !!order.region?.automatic_taxes
-  const hasTaxLines = !!Object.keys(taxCodes).length
-
-  const discountTotal = automaticTaxesOn
-    ? order.discount_total
-    : order.discount_subtotal
+  const hasTaxes = !!Object.keys(taxCodes).length
 
   return (
     <div className="text-ui-fg-subtle flex flex-col gap-y-2 px-6 py-4">
       <Cost
-        label={t(
-          automaticTaxesOn
-            ? "orders.summary.itemTotal"
-            : "orders.summary.itemSubtotal"
-        )}
-        value={getLocaleAmount(order.item_total, order.currency_code)}
+        label={t("orders.summary.itemSubtotal")}
+        value={getLocaleAmount(order.item_subtotal, order.currency_code)}
       />
       <Cost
         label={
@@ -614,13 +610,7 @@ const CostBreakdown = ({
             onClick={() => setIsShippingOpen((o) => !o)}
             className="flex cursor-pointer items-center gap-1"
           >
-            <span>
-              {t(
-                automaticTaxesOn
-                  ? "orders.summary.shippingTotal"
-                  : "orders.summary.shippingSubtotal"
-              )}
-            </span>
+            <span>{t("orders.summary.shippingSubtotal")}</span>
             <TriangleDownMini
               style={{
                 transform: `rotate(${isShippingOpen ? 0 : -90}deg)`,
@@ -628,10 +618,7 @@ const CostBreakdown = ({
             />
           </div>
         }
-        value={getLocaleAmount(
-          automaticTaxesOn ? order.shipping_total : order.shipping_subtotal,
-          order.currency_code
-        )}
+        value={getLocaleAmount(order.shipping_subtotal, order.currency_code)}
       />
 
       {isShippingOpen && (
@@ -647,7 +634,7 @@ const CostBreakdown = ({
                   className="flex items-center justify-between gap-x-2"
                 >
                   <div>
-                    <span className="txt-small text-ui-fg-subtle font-medium">
+                    <span className="txt-small">
                       {sm.name}
                       {sm.detail.return_id &&
                         ` (${t("fields.returnShipping")})`}{" "}
@@ -658,10 +645,7 @@ const CostBreakdown = ({
                     <div className="bottom-[calc(50% - 2px)] absolute h-[1px] w-full border-b border-dashed" />
                   </div>
                   <span className="txt-small text-ui-fg-muted">
-                    {getLocaleAmount(
-                      automaticTaxesOn ? sm.total : sm.subtotal,
-                      order.currency_code
-                    )}
+                    {getLocaleAmount(sm.subtotal, order.currency_code)}
                   </span>
                 </div>
               )
@@ -669,36 +653,18 @@ const CostBreakdown = ({
         </div>
       )}
 
-      <Cost
-        label={t(
-          automaticTaxesOn
-            ? "orders.summary.discountTotal"
-            : "orders.summary.discountSubtotal"
-        )}
-        secondaryValue={discountCodes.join(", ")}
-        value={
-          discountTotal > 0
-            ? `- ${getLocaleAmount(discountTotal, order.currency_code)}`
-            : "-"
-        }
-      />
-
       <>
         <div className="flex justify-between">
           <div
-            onClick={() => hasTaxLines && setIsTaxOpen((o) => !o)}
+            onClick={() => hasTaxes && setIsTaxOpen((o) => !o)}
             className={clx("flex items-center gap-1", {
-              "cursor-pointer": hasTaxLines,
+              "cursor-pointer": hasTaxes,
             })}
           >
             <span className="txt-small select-none">
-              {t(
-                automaticTaxesOn
-                  ? "orders.summary.taxTotalIncl"
-                  : "orders.summary.taxTotal"
-              )}
+              {t("orders.summary.taxTotal")}
             </span>
-            {hasTaxLines && (
+            {hasTaxes && (
               <TriangleDownMini
                 style={{
                   transform: `rotate(${isTaxOpen ? 0 : -90}deg)`,
@@ -709,21 +675,22 @@ const CostBreakdown = ({
 
           <div className="text-right">
             <Text size="small" leading="compact">
-              {getLocaleAmount(order.tax_total, order.currency_code)}
+              {getLocaleAmount(order.original_tax_total, order.currency_code)}
             </Text>
           </div>
         </div>
         {isTaxOpen && (
           <div className="flex flex-col gap-1 pl-5">
-            {Object.entries(taxCodes).map(([code, total]) => {
+            {Object.entries(taxCodes).map(([code, { total, rate }]) => {
               return (
                 <div
                   key={code}
                   className="flex items-center justify-between gap-x-2"
                 >
-                  <div>
-                    <span className="txt-small text-ui-fg-subtle font-medium">
-                      {code}
+                  <div className="flex gap-1">
+                    <span className="txt-small">{code}</span>
+                    <span className="txt-small">
+                      ({formatPercentage(rate)})
                     </span>
                   </div>
                   <div className="relative flex-1">
@@ -738,6 +705,232 @@ const CostBreakdown = ({
           </div>
         )}
       </>
+      <div className="text-ui-fg-base flex items-center justify-between">
+        <Text className="text-ui-fg-subtle" size="small" leading="compact">
+          {t("fields.total")}
+        </Text>
+        <Text
+          className="text-ui-fg-subtle text-bold"
+          size="small"
+          leading="compact"
+        >
+          {getLocaleAmount(order.original_total, order.currency_code)}
+        </Text>
+      </div>
+    </div>
+  )
+}
+
+const DiscountAndTotalBreakdown = ({
+  order,
+  plugins,
+}: {
+  order: AdminOrder & { region?: AdminRegion | null }
+  plugins: AdminPlugin[]
+}) => {
+  const { t } = useTranslation()
+  const [isDiscountOpen, setIsDiscountOpen] = useState(false)
+  const [isCreditLinesOpen, setIsCreditLinesOpen] = useState(false)
+
+  const creditLines = order.credit_lines ?? []
+  const loyaltyPlugin = getLoyaltyPlugin(plugins)
+
+  const discounts = useMemo(() => {
+    const discounts: {
+      type: "item" | "shipping"
+      total: number
+      codes: string[]
+    }[] = []
+    if (order.item_discount_total) {
+      discounts.push({
+        type: "item",
+        total: order.item_discount_total,
+        codes: Array.from(
+          new Set(
+            order.items
+              .flatMap((item) => item.adjustments || [])
+              .map((adjustment) => adjustment.code!)
+          )
+        ).sort(),
+      })
+    }
+    if (order.shipping_discount_total) {
+      discounts.push({
+        type: "shipping",
+        total: order.shipping_discount_total,
+        codes: Array.from(
+          new Set(
+            order.shipping_methods
+              .flatMap((shippingMethod) => shippingMethod.adjustments || [])
+              .map((adjustment) => adjustment.code!)
+          )
+        ).sort(),
+      })
+    }
+    return discounts
+  }, [order])
+
+  const hasDiscount = discounts.length > 0
+  const hasCreditLines = creditLines.length > 0
+
+  return (
+    <div className="text-ui-fg-subtle flex flex-col gap-y-2 px-6 py-4">
+      <Cost
+        label={
+          <div
+            onClick={() => hasDiscount && setIsDiscountOpen((o) => !o)}
+            className={clx("flex items-center gap-1", {
+              "cursor-pointer": hasDiscount,
+            })}
+          >
+            <span>{t("orders.summary.discountTotal")}</span>
+            {hasDiscount && (
+              <TriangleDownMini
+                style={{
+                  transform: `rotate(${isDiscountOpen ? 0 : -90}deg)`,
+                }}
+              />
+            )}
+          </div>
+        }
+        value={getLocaleAmount(order.discount_total, order.currency_code)}
+      />
+      {isDiscountOpen && (
+        <div className="flex flex-col gap-1 pl-5">
+          {discounts.map(({ type, total, codes }) => {
+            return (
+              <div
+                key={type}
+                className="flex items-center justify-between gap-x-2"
+              >
+                <div className="flex gap-1">
+                  <span className="txt-small">{t(`fields.${type}`)}</span>
+                  <span className="txt-small">({codes.join(", ")})</span>
+                </div>
+                <div className="relative flex-1">
+                  <div className="bottom-[calc(50% - 2px)] absolute h-[1px] w-full border-b border-dashed" />
+                </div>
+                <span className="txt-small text-ui-fg-muted">
+                  {getLocaleAmount(total, order.currency_code)}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {hasCreditLines && (
+        <>
+          <Cost
+            label={
+              <div
+                onClick={() => setIsCreditLinesOpen((o) => !o)}
+                className="flex cursor-pointer items-center gap-1"
+              >
+                <span>
+                  {loyaltyPlugin
+                    ? t("orders.giftCardsStoreCreditLines")
+                    : t("orders.creditLines.title")}
+                </span>
+                <TriangleDownMini
+                  style={{
+                    transform: `rotate(${isCreditLinesOpen ? 0 : -90}deg)`,
+                  }}
+                />
+              </div>
+            }
+            value={getLocaleAmount(
+              order.credit_line_total,
+              order.currency_code
+            )}
+          />
+          {isCreditLinesOpen && (
+            <div className="flex flex-col gap-1 pl-5">
+              {creditLines.map((creditLine) => {
+                const prettyReference = creditLine.reference
+                  ?.split("_")
+                  .join(" ")
+                  .split("-")
+                  .join(" ")
+
+                const prettyReferenceId = creditLine.reference_id ? (
+                  <DisplayId id={creditLine.reference_id} />
+                ) : null
+
+                return (
+                  <div
+                    key={creditLine.id}
+                    className="flex items-center justify-between gap-x-2"
+                  >
+                    <div className="flex items-center">
+                      <Text
+                        size="small"
+                        leading="compact"
+                        weight="plus"
+                        className="txt-small text-ui-fg-subtle font-medium"
+                      >
+                        <DisplayId id={creditLine.id} />
+                      </Text>
+                      <span className="txt-small text-ui-fg-subtle mx-1">
+                        -
+                      </span>
+                      <Tooltip
+                        content={format(
+                          new Date(creditLine.created_at),
+                          "dd MMM, yyyy, HH:mm:ss"
+                        )}
+                      >
+                        <Text
+                          size="small"
+                          leading="compact"
+                          className="txt-small text-ui-fg-subtle"
+                        >
+                          {format(
+                            new Date(creditLine.created_at),
+                            "dd MMM, yyyy"
+                          )}
+                        </Text>
+                      </Tooltip>
+                      <span className="txt-small text-ui-fg-subtle mx-1">
+                        -
+                      </span>
+                      <Text
+                        size="small"
+                        leading="compact"
+                        className="txt-small text-ui-fg-subtle capitalize"
+                      >
+                        ({prettyReference} {prettyReferenceId})
+                      </Text>
+                    </div>
+                    <div className="relative flex-1">
+                      <div className="bottom-[calc(50% - 2px)] absolute h-[1px] w-full border-b border-dashed" />
+                    </div>
+                    <span className="txt-small text-ui-fg-muted">
+                      {getLocaleAmount(
+                        creditLine.amount as number,
+                        order.currency_code
+                      )}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </>
+      )}
+
+      <div className="text-ui-fg-base flex items-center justify-between">
+        <Text className="text-ui-fg-subtle" size="small" leading="compact">
+          {t("orders.summary.totalAfterDiscount")}
+        </Text>
+        <Text
+          className="text-ui-fg-subtle text-bold"
+          size="small"
+          leading="compact"
+        >
+          {getLocaleAmount(order.total, order.currency_code)}
+        </Text>
+      </div>
     </div>
   )
 }
@@ -1029,39 +1222,10 @@ const Total = ({ order }: { order: AdminOrder }) => {
   return (
     <div className=" flex flex-col gap-y-2 px-6 py-4">
       <div className="text-ui-fg-base flex items-center justify-between">
-        <Text
-          weight="plus"
-          className="text-ui-fg-subtle"
-          size="small"
-          leading="compact"
-        >
-          {t("fields.total")}
-        </Text>
-        <Text
-          weight="plus"
-          className="text-ui-fg-subtle"
-          size="small"
-          leading="compact"
-        >
-          {getStylizedAmount(order.total, order.currency_code)}
-        </Text>
-      </div>
-
-      <div className="text-ui-fg-base flex items-center justify-between">
-        <Text
-          weight="plus"
-          className="text-ui-fg-subtle"
-          size="small"
-          leading="compact"
-        >
+        <Text className="text-ui-fg-subtle" size="small" leading="compact">
           {t("fields.paidTotal")}
         </Text>
-        <Text
-          weight="plus"
-          className="text-ui-fg-subtle"
-          size="small"
-          leading="compact"
-        >
+        <Text className="text-ui-fg-subtle" size="small" leading="compact">
           {getStylizedAmount(
             getTotalCaptured(order.payment_collections || []),
             order.currency_code
@@ -1069,20 +1233,33 @@ const Total = ({ order }: { order: AdminOrder }) => {
         </Text>
       </div>
 
+      {getTotalCreditLines(order.credit_lines ?? []) > 0 && (
+        <div className="text-ui-fg-base flex items-center justify-between">
+          <Text className="text-ui-fg-subtle" size="small" leading="compact">
+            {t("fields.creditTotal")}
+          </Text>
+
+          <Text className="text-ui-fg-subtle" size="small" leading="compact">
+            {getStylizedAmount(
+              getTotalCreditLines(order.credit_lines ?? []),
+              order.currency_code
+            )}
+          </Text>
+        </div>
+      )}
+
       <div className="text-ui-fg-base flex items-center justify-between">
         <Text
           className="text-ui-fg-subtle text-semibold"
           size="small"
           leading="compact"
-          weight="plus"
         >
           {t("orders.returns.outstandingAmount")}
         </Text>
         <Text
-          className="text-ui-fg-subtle text-bold"
+          className="text-ui-fg-subtle text-bold" // ici
           size="small"
           leading="compact"
-          weight="plus"
         >
           {getStylizedAmount(
             order.summary.pending_difference || 0,

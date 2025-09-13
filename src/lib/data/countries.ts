@@ -932,13 +932,6 @@ export const countries: StaticCountry[] = [
     display_name: "Macao",
   },
   {
-    iso_2: "mk",
-    iso_3: "mkd",
-    num_code: "807",
-    name: "MACEDONIA, THE FORMER YUGOSLAV REPUBLIC OF",
-    display_name: "Macedonia, the Former Yugoslav Republic of",
-  },
-  {
     iso_2: "mg",
     iso_3: "mdg",
     num_code: "450",
@@ -1161,6 +1154,13 @@ export const countries: StaticCountry[] = [
     num_code: "574",
     name: "NORFOLK ISLAND",
     display_name: "Norfolk Island",
+  },
+  {
+    iso_2: "mk",
+    iso_3: "mkd",
+    num_code: "807",
+    name: "NORTH MACEDONIA",
+    display_name: "North Macedonia",
   },
   {
     iso_2: "mp",

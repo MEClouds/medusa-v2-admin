@@ -4,8 +4,8 @@ import { Container, Heading } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { ActionMenu } from "../../../../../components/common/action-menu"
 import { SectionRow } from "../../../../../components/common/section"
-import { useDashboardExtension } from "../../../../../extensions"
 import { getFormattedCountry } from "../../../../../lib/addresses"
+import { useExtension } from "../../../../../providers/extension-provider"
 
 type ProductAttributeSectionProps = {
   product: HttpTypes.AdminProduct
@@ -15,7 +15,7 @@ export const ProductAttributeSection = ({
   product,
 }: ProductAttributeSectionProps) => {
   const { t } = useTranslation()
-  const { getDisplays } = useDashboardExtension()
+  const { getDisplays } = useExtension()
 
   return (
     <Container className="divide-y p-0">

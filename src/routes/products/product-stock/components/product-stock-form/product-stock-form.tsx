@@ -140,9 +140,9 @@ export const ProductStockForm = ({
 
   return (
     <RouteFocusModal.Form form={form}>
-      <KeyboundForm onSubmit={onSubmit} className="flex h-full flex-col">
+      <KeyboundForm onSubmit={onSubmit} className="flex size-full flex-col">
         <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex-1">
+        <RouteFocusModal.Body className="flex flex-col overflow-hidden">
           <DataGrid
             state={form}
             columns={columns}

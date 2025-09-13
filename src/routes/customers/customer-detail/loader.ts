@@ -5,7 +5,10 @@ import { queryClient } from "../../../lib/query-client"
 
 const customerDetailQuery = (id: string) => ({
   queryKey: productsQueryKeys.detail(id),
-  queryFn: async () => sdk.admin.customer.retrieve(id),
+  queryFn: async () =>
+    sdk.admin.customer.retrieve(id, {
+      fields: "+*addresses",
+    }),
 })
 
 export const customerLoader = async ({ params }: LoaderFunctionArgs) => {

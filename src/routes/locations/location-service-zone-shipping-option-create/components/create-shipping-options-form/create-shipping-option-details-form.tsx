@@ -10,11 +10,9 @@ import { Combobox } from "../../../../../components/inputs/combobox"
 import { useComboboxData } from "../../../../../hooks/use-combobox-data"
 import { sdk } from "../../../../../lib/client"
 import { formatProvider } from "../../../../../lib/format-provider"
-import {
-  FulfillmentSetType,
-  ShippingOptionPriceType,
-} from "../../../common/constants"
+import { FulfillmentSetType, ShippingOptionPriceType, } from "../../../common/constants"
 import { CreateShippingOptionSchema } from "./schema"
+import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
 
 type CreateShippingOptionDetailsFormProps = {
   form: UseFormReturn<CreateShippingOptionSchema>
@@ -36,7 +34,7 @@ export const CreateShippingOptionDetailsForm = ({
   type,
 }: CreateShippingOptionDetailsFormProps) => {
   const { t } = useTranslation()
-
+  const direction = useDocumentDirection()
   const isPickup = type === FulfillmentSetType.Pickup
 
   const shippingProfiles = useComboboxData({
@@ -46,6 +44,16 @@ export const CreateShippingOptionDetailsForm = ({
       data.shipping_profiles.map((profile) => ({
         label: profile.name,
         value: profile.id,
+      })),
+  })
+
+  const shippingOptionTypes = useComboboxData({
+    queryFn: (params) => sdk.admin.shippingOptionType.list(params),
+    queryKey: ["shipping_option_types"],
+    getOptions: (data) =>
+      data.shipping_option_types.map((type) => ({
+        label: type.label,
+        value: type.id,
       })),
   })
 
@@ -98,6 +106,7 @@ export const CreateShippingOptionDetailsForm = ({
                   </Form.Label>
                   <Form.Control>
                     <RadioGroup
+                      dir={direction}
                       className="grid grid-cols-1 gap-4 md:grid-cols-2"
                       {...field}
                       onValueChange={field.onChange}
@@ -170,6 +179,31 @@ export const CreateShippingOptionDetailsForm = ({
               )
             }}
           />
+          <Form.Field
+            control={form.control}
+            name="shipping_option_type_id"
+            render={({ field }) => {
+              return (
+                <Form.Item>
+                  <Form.Label>
+                    {t("stockLocations.shippingOptions.fields.type")}
+                  </Form.Label>
+                  <Form.Control>
+                    <Combobox
+                      {...field}
+                      options={shippingOptionTypes.options}
+                      searchValue={shippingOptionTypes.searchValue}
+                      onSearchValueChange={
+                        shippingOptionTypes.onSearchValueChange
+                      }
+                      disabled={shippingOptionTypes.disabled}
+                    />
+                  </Form.Control>
+                  <Form.ErrorMessage />
+                </Form.Item>
+              )
+            }}
+          />
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -220,6 +254,7 @@ export const CreateShippingOptionDetailsForm = ({
                   </Form.Label>
                   <Form.Control>
                     <Select
+                      dir={direction}
                       {...field}
                       onValueChange={field.onChange}
                       disabled={!selectedProviderId}
@@ -247,21 +282,15 @@ export const CreateShippingOptionDetailsForm = ({
           />
         </div>
 
-        {!isPickup && (
-          <>
-            <Divider />
-            <SwitchBox
-              control={form.control}
-              name="enabled_in_store"
-              label={t(
-                "stockLocations.shippingOptions.fields.enableInStore.label"
-              )}
-              description={t(
-                "stockLocations.shippingOptions.fields.enableInStore.hint"
-              )}
-            />
-          </>
-        )}
+        <Divider />
+        <SwitchBox
+          control={form.control}
+          name="enabled_in_store"
+          label={t("stockLocations.shippingOptions.fields.enableInStore.label")}
+          description={t(
+            "stockLocations.shippingOptions.fields.enableInStore.hint"
+          )}
+        />
       </div>
     </div>
   )

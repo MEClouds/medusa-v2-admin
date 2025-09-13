@@ -9,7 +9,7 @@ import { campaignLoader } from "./loader"
 
 import { TwoColumnPageSkeleton } from "../../../components/common/skeleton"
 import { TwoColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 import { CampaignConfigurationSection } from "./components/campaign-configuration-section"
 import { CAMPAIGN_DETAIL_FIELDS } from "./constants"
 
@@ -25,7 +25,7 @@ export const CampaignDetail = () => {
     { initialData }
   )
 
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   if (isLoading || !campaign) {
     return (

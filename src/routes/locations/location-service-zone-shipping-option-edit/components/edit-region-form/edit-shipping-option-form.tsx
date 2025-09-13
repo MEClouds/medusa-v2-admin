@@ -19,6 +19,8 @@ import {
   FulfillmentSetType,
   ShippingOptionPriceType,
 } from "../../../common/constants"
+import { formatProvider } from "../../../../../lib/format-provider"
+import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
 
 type EditShippingOptionFormProps = {
   locationId: string
@@ -31,6 +33,8 @@ const EditShippingOptionSchema = zod.object({
   price_type: zod.nativeEnum(ShippingOptionPriceType),
   enabled_in_store: zod.boolean().optional(),
   shipping_profile_id: zod.string(),
+  shipping_option_type_id: zod.string(),
+  provider_id: zod.string().optional(), // just for UI purposes
 })
 
 export const EditShippingOptionForm = ({
@@ -40,7 +44,7 @@ export const EditShippingOptionForm = ({
 }: EditShippingOptionFormProps) => {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
-
+  const direction = useDocumentDirection()
   const isPickup = type === FulfillmentSetType.Pickup
 
   const shippingProfiles = useComboboxData({
@@ -54,12 +58,24 @@ export const EditShippingOptionForm = ({
     defaultValue: shippingOption.shipping_profile_id,
   })
 
+  const shippingOptionTypes = useComboboxData({
+    queryFn: (params) => sdk.admin.shippingOptionType.list(params),
+    queryKey: ["shipping_option_types"],
+    getOptions: (data) =>
+      data.shipping_option_types.map((type) => ({
+        label: type.label,
+        value: type.id,
+      })),
+  })
+
   const form = useForm<zod.infer<typeof EditShippingOptionSchema>>({
     defaultValues: {
       name: shippingOption.name,
       price_type: shippingOption.price_type as ShippingOptionPriceType,
       enabled_in_store: isOptionEnabledInStore(shippingOption),
       shipping_profile_id: shippingOption.shipping_profile_id,
+      shipping_option_type_id: shippingOption.type.id,
+      provider_id: shippingOption.provider_id,
     },
     resolver: zodResolver(EditShippingOptionSchema),
   })
@@ -92,6 +108,7 @@ export const EditShippingOptionForm = ({
         price_type: values.price_type,
         shipping_profile_id: values.shipping_profile_id,
         rules,
+        type_id: values.shipping_option_type_id,
       },
       {
         onSuccess: ({ shipping_option }) => {
@@ -111,8 +128,11 @@ export const EditShippingOptionForm = ({
 
   return (
     <RouteDrawer.Form form={form}>
-      <KeyboundForm onSubmit={handleSubmit} className="flex flex-1 flex-col">
-        <RouteDrawer.Body>
+      <KeyboundForm
+        onSubmit={handleSubmit}
+        className="flex flex-1 flex-col overflow-hidden"
+      >
+        <RouteDrawer.Body className="overflow-y-auto">
           <div className="flex flex-col gap-y-8">
             <div className="flex flex-col gap-y-8">
               {!isPickup && (
@@ -128,7 +148,11 @@ export const EditShippingOptionForm = ({
                           )}
                         </Form.Label>
                         <Form.Control>
-                          <RadioGroup {...field} onValueChange={field.onChange}>
+                          <RadioGroup
+                            dir={direction}
+                            {...field}
+                            onValueChange={field.onChange}
+                          >
                             <RadioGroup.ChoiceBox
                               className="flex-1"
                               value={ShippingOptionPriceType.FlatRate}
@@ -200,23 +224,75 @@ export const EditShippingOptionForm = ({
                     )
                   }}
                 />
+
+                <Form.Field
+                  control={form.control}
+                  name="shipping_option_type_id"
+                  render={({ field }) => {
+                    return (
+                      <Form.Item>
+                        <Form.Label>
+                          {t("stockLocations.shippingOptions.fields.type")}
+                        </Form.Label>
+                        <Form.Control>
+                          <Combobox
+                            {...field}
+                            options={shippingOptionTypes.options}
+                            searchValue={shippingOptionTypes.searchValue}
+                            onSearchValueChange={
+                              shippingOptionTypes.onSearchValueChange
+                            }
+                            disabled={shippingOptionTypes.disabled}
+                          />
+                        </Form.Control>
+                        <Form.ErrorMessage />
+                      </Form.Item>
+                    )
+                  }}
+                />
+
+                <Form.Field
+                  control={form.control}
+                  name="provider_id"
+                  disabled={true}
+                  render={({ field }) => {
+                    return (
+                      <Form.Item>
+                        <Form.Label>
+                          {t("stockLocations.shippingOptions.fields.provider")}
+                        </Form.Label>
+                        <Form.Control>
+                          <Combobox
+                            value={shippingOption.provider_id}
+                            disabled={true}
+                            options={[
+                              {
+                                label: `${formatProvider(
+                                  shippingOption.provider_id
+                                )} (${shippingOption?.data?.id || "N/A"})`, // FO is stored in so.data and only guaranteed proeprty is `id`
+                                value: shippingOption.provider_id,
+                              },
+                            ]}
+                          />
+                        </Form.Control>
+                        <Form.ErrorMessage />
+                      </Form.Item>
+                    )
+                  }}
+                />
               </div>
 
-              {!isPickup && (
-                <>
-                  <Divider />
-                  <SwitchBox
-                    control={form.control}
-                    name="enabled_in_store"
-                    label={t(
-                      "stockLocations.shippingOptions.fields.enableInStore.label"
-                    )}
-                    description={t(
-                      "stockLocations.shippingOptions.fields.enableInStore.hint"
-                    )}
-                  />
-                </>
-              )}
+              <Divider />
+              <SwitchBox
+                control={form.control}
+                name="enabled_in_store"
+                label={t(
+                  "stockLocations.shippingOptions.fields.enableInStore.label"
+                )}
+                description={t(
+                  "stockLocations.shippingOptions.fields.enableInStore.hint"
+                )}
+              />
             </div>
           </div>
         </RouteDrawer.Body>

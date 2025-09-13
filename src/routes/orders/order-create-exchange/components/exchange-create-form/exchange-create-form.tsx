@@ -60,10 +60,18 @@ export const ExchangeCreateForm = ({
     useState(false)
   const [isOutboundShippingPriceEdit, setIsOutboundShippingPriceEdit] =
     useState(false)
+
   const [customInboundShippingAmount, setCustomInboundShippingAmount] =
-    useState<number | string>(0)
+    useState<{ value: string; float: number | null }>({
+      value: "0",
+      float: 0,
+    })
+
   const [customOutboundShippingAmount, setCustomOutboundShippingAmount] =
-    useState<number | string>(0)
+    useState<{ value: string; float: number | null }>({
+      value: "0",
+      float: 0,
+    })
 
   /**
    * MUTATIONS
@@ -252,6 +260,15 @@ export const ExchangeCreateForm = ({
     return (method?.total as number) || 0
   }, [preview.shipping_methods])
 
+  const outboundShippingTotal = useMemo(() => {
+    const method = preview.shipping_methods.find(
+      (sm) =>
+        !!sm.actions?.find((a) => a.action === "SHIPPING_ADD" && !a.return_id)
+    )
+
+    return (method?.total as number) || 0
+  }, [preview.shipping_methods])
+
   return (
     <RouteFocusModal.Form form={form}>
       <KeyboundForm onSubmit={handleSubmit} className="flex h-full flex-col">
@@ -356,10 +373,7 @@ export const ExchangeCreateForm = ({
                           }
                         })
 
-                        const customPrice =
-                          customInboundShippingAmount === ""
-                            ? null
-                            : parseFloat(customInboundShippingAmount)
+                        const customPrice = customInboundShippingAmount.float
 
                         if (actionId) {
                           updateInboundShipping(
@@ -381,8 +395,13 @@ export const ExchangeCreateForm = ({
                           .symbol_native
                       }
                       code={order.currency_code}
-                      onValueChange={setCustomInboundShippingAmount}
-                      value={customInboundShippingAmount}
+                      onValueChange={(value, name, values) =>
+                        setCustomInboundShippingAmount({
+                          value: values?.value ?? "",
+                          float: values?.float ?? null,
+                        })
+                      }
+                      value={customInboundShippingAmount.value}
                       disabled={!inboundPreviewItems?.length}
                     />
                   ) : (
@@ -427,10 +446,7 @@ export const ExchangeCreateForm = ({
                           }
                         })
 
-                        const customPrice =
-                          customOutboundShippingAmount === ""
-                            ? null
-                            : parseFloat(customOutboundShippingAmount)
+                        const customPrice = customOutboundShippingAmount.float
 
                         if (actionId) {
                           updateOutboundShipping(
@@ -452,13 +468,18 @@ export const ExchangeCreateForm = ({
                           .symbol_native
                       }
                       code={order.currency_code}
-                      onValueChange={setCustomOutboundShippingAmount}
-                      value={customOutboundShippingAmount}
+                      onValueChange={(value, name, values) =>
+                        setCustomOutboundShippingAmount({
+                          value: values?.value ?? "",
+                          float: values?.float ?? null,
+                        })
+                      }
+                      value={customOutboundShippingAmount.value}
                       disabled={!outboundPreviewItems?.length}
                     />
                   ) : (
                     getStylizedAmount(
-                      outboundShipping?.amount ?? 0,
+                      outboundShippingTotal,
                       order.currency_code
                     )
                   )}
@@ -488,7 +509,8 @@ export const ExchangeCreateForm = ({
                       <div className="flex items-center">
                         <Form.Control className="mr-4 self-start">
                           <Switch
-                            className="mt-[2px]"
+                            dir="ltr"
+                            className="mt-[2px] rtl:rotate-180"
                             checked={!!value}
                             onCheckedChange={onChange}
                             {...field}

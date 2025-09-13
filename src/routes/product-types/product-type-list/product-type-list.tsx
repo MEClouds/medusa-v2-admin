@@ -1,9 +1,9 @@
 import { SingleColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 import { ProductTypeListTable } from "./components/product-type-list-table"
 
 export const ProductTypeList = () => {
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   return (
     <SingleColumnPage

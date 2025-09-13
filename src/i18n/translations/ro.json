@@ -535,18 +535,22 @@
     "fields": {
       "title": {
         "label": "Titlu",
-        "hint": "Dați produsului dvs. un titlu scurt și clar.<0/>50-60 de caractere este lungimea recomandată pentru motoarele de căutare."
+        "hint": "Dați produsului dvs. un titlu scurt și clar.<0/>50-60 de caractere este lungimea recomandată pentru motoarele de căutare.",
+        "placeholder": "Jachetă de iarnă"
       },
       "subtitle": {
-        "label": "Subtitlu"
+        "label": "Subtitlu",
+        "placeholder": "Cald și confortabil"
       },
       "handle": {
         "label": "Mâner",
-        "tooltip": "Mânerul este folosit pentru a face referire la produsul din vitrina dvs. "
+        "tooltip": "Mânerul este folosit pentru a face referire la produsul din vitrina dvs. ",
+        "placeholder": "jachetă-de-iarnă"
       },
       "description": {
         "label": "Descriere",
-        "hint": "Oferiți produsului dumneavoastră o descriere scurtă și clară.<0/>120-160 de caractere este lungimea recomandată pentru motoarele de căutare."
+        "hint": "Oferiți produsului dumneavoastră o descriere scurtă și clară.<0/>120-160 de caractere este lungimea recomandată pentru motoarele de căutare.",
+        "placeholder": "O jachetă călduroasă și confortabilă"
       },
       "discountable": {
         "label": "Reducere",

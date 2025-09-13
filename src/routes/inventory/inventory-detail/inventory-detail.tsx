@@ -10,7 +10,7 @@ import { InventoryItemReservationsSection } from "./components/inventory-item-re
 import { InventoryItemVariantsSection } from "./components/inventory-item-variants/variants-section"
 import { inventoryItemLoader } from "./loader"
 
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 import { INVENTORY_DETAIL_FIELDS } from "./constants"
 
 export const InventoryDetail = () => {
@@ -35,7 +35,7 @@ export const InventoryDetail = () => {
     }
   )
 
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   if (isLoading || !inventory_item) {
     return (

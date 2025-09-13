@@ -14,6 +14,7 @@ import { KeyboundForm } from "../../../../../components/utilities/keybound-form/
 import { useUpdateRegion } from "../../../../../hooks/api/regions.tsx"
 import { CurrencyInfo } from "../../../../../lib/data/currencies.ts"
 import { formatProvider } from "../../../../../lib/format-provider.ts"
+import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
 
 type EditRegionFormProps = {
   region: HttpTypes.AdminRegion
@@ -42,7 +43,7 @@ export const EditRegionForm = ({
     (preference) =>
       preference.attribute === "region_id" && preference.value === region.id
   )
-
+  const direction = useDocumentDirection()
   const form = useForm<zod.infer<typeof EditRegionSchema>>({
     defaultValues: {
       name: region.name,
@@ -79,8 +80,8 @@ export const EditRegionForm = ({
 
   return (
     <RouteDrawer.Form form={form}>
-      <KeyboundForm onSubmit={handleSubmit} className="flex flex-1 flex-col">
-        <RouteDrawer.Body>
+      <KeyboundForm onSubmit={handleSubmit} className="flex flex-1 flex-col overflow-hidden">
+        <RouteDrawer.Body className="overflow-y-auto">
           <div className="flex flex-col gap-y-8">
             <div className="flex flex-col gap-y-4">
               <Form.Field
@@ -106,7 +107,11 @@ export const EditRegionForm = ({
                     <Form.Item>
                       <Form.Label>{t("fields.currency")}</Form.Label>
                       <Form.Control>
-                        <Select onValueChange={onChange} {...field}>
+                        <Select
+                          dir={direction}
+                          onValueChange={onChange}
+                          {...field}
+                        >
                           <Select.Trigger ref={ref}>
                             <Select.Value />
                           </Select.Trigger>
@@ -137,6 +142,8 @@ export const EditRegionForm = ({
                           <Form.Label>{t("fields.automaticTaxes")}</Form.Label>
                           <Form.Control>
                             <Switch
+                              dir="ltr"
+                              className="rtl:rotate-180"
                               {...field}
                               checked={value}
                               onCheckedChange={onChange}
@@ -164,6 +171,8 @@ export const EditRegionForm = ({
                           </Form.Label>
                           <Form.Control>
                             <Switch
+                              dir="ltr"
+                              className="rtl:rotate-180"
                               {...field}
                               checked={value}
                               onCheckedChange={onChange}

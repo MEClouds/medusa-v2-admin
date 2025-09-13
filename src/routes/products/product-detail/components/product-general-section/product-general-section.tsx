@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom"
 
 import { ActionMenu } from "../../../../../components/common/action-menu"
 import { SectionRow } from "../../../../../components/common/section"
-import { useDashboardExtension } from "../../../../../extensions"
 import { useDeleteProduct } from "../../../../../hooks/api/products"
+import { useExtension } from "../../../../../providers/extension-provider"
 
 const productStatusColor = (status: string) => {
   switch (status) {
@@ -34,7 +34,7 @@ export const ProductGeneralSection = ({
   const { t } = useTranslation()
   const prompt = usePrompt()
   const navigate = useNavigate()
-  const { getDisplays } = useDashboardExtension()
+  const { getDisplays } = useExtension()
 
   const displays = getDisplays("product", "general")
 

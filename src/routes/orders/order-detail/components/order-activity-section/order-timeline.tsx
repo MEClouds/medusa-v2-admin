@@ -30,7 +30,7 @@ import { useCancelReturn, useReturns } from "../../../../../hooks/api/returns"
 import { useDate } from "../../../../../hooks/use-date"
 import { getFormattedAddress } from "../../../../../lib/addresses"
 import { getStylizedAmount } from "../../../../../lib/money-amount-helpers"
-import { getPaymentsFromOrder } from "../order-payment-section"
+import { getPaymentsFromOrder } from "../../../../../lib/orders"
 import ActivityItems from "./activity-items"
 import ChangeDetailsTooltip from "./change-details-tooltip"
 
@@ -392,12 +392,12 @@ const useActivityItems = (order: AdminOrder): Activity[] => {
           edit.status === "requested"
             ? edit.requested_at
             : edit.status === "confirmed"
-            ? edit.confirmed_at
-            : edit.status === "declined"
-            ? edit.declined_at
-            : edit.status === "canceled"
-            ? edit.canceled_at
-            : edit.created_at,
+              ? edit.confirmed_at
+              : edit.status === "declined"
+                ? edit.declined_at
+                : edit.status === "canceled"
+                  ? edit.canceled_at
+                  : edit.created_at,
         children: isConfirmed ? <OrderEditBody edit={edit} /> : null,
       })
     }

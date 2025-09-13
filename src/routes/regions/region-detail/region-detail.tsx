@@ -7,8 +7,8 @@ import { regionLoader } from "./loader"
 
 import { SingleColumnPageSkeleton } from "../../../components/common/skeleton"
 import { SingleColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
 import { usePricePreferences } from "../../../hooks/api/price-preferences"
+import { useExtension } from "../../../providers/extension-provider"
 import { REGION_DETAIL_FIELDS } from "./constants"
 
 export const RegionDetail = () => {
@@ -43,7 +43,7 @@ export const RegionDetail = () => {
     { enabled: !!region }
   )
 
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   if (isLoading || isLoadingPreferences || !region) {
     return <SingleColumnPageSkeleton sections={2} showJSON showMetadata />

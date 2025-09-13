@@ -94,7 +94,13 @@ export const ReturnCreateForm = ({
    */
   const { setIsOpen } = useStackedModal()
   const [isShippingPriceEdit, setIsShippingPriceEdit] = useState(false)
-  const [customShippingAmount, setCustomShippingAmount] = useState(0)
+  const [customShippingAmount, setCustomShippingAmount] = useState<{
+    value: string
+    float: number | null
+  }>({
+    value: "0",
+    float: 0,
+  })
   const [inventoryMap, setInventoryMap] = useState<
     Record<string, InventoryLevelDTO[]>
   >({})
@@ -292,7 +298,9 @@ export const ReturnCreateForm = ({
     await updateReturnRequest({ location_id: selectedLocationId })
   }
 
-  const onShippingOptionChange = async (selectedOptionId: string) => {
+  const onShippingOptionChange = async (
+    selectedOptionId: string | undefined
+  ) => {
     const promises = preview.shipping_methods
       .map((s) => s.actions?.find((a) => a.action === "SHIPPING_ADD")?.id)
       .filter(Boolean)
@@ -300,7 +308,9 @@ export const ReturnCreateForm = ({
 
     await Promise.all(promises)
 
-    await addReturnShipping({ shipping_option_id: selectedOptionId })
+    if (selectedOptionId) {
+      await addReturnShipping({ shipping_option_id: selectedOptionId })
+    }
   }
 
   useEffect(() => {
@@ -391,8 +401,6 @@ export const ReturnCreateForm = ({
 
     return method?.total || 0
   }, [preview.shipping_methods])
-
-  const refundAmount = returnTotal - shippingTotal
 
   return (
     <RouteFocusModal.Form
@@ -564,7 +572,6 @@ export const ReturnCreateForm = ({
                     </Form.Hint>
                   </div>
 
-                  {/* TODO: WHAT IF THE RETURN OPTION HAS COMPUTED PRICE*/}
                   <Form.Field
                     control={form.control}
                     name="option_id"
@@ -573,6 +580,7 @@ export const ReturnCreateForm = ({
                         <Form.Item>
                           <Form.Control>
                             <Combobox
+                              allowClear
                               value={value}
                               onChange={(v) => {
                                 onChange(v)
@@ -669,10 +677,7 @@ export const ReturnCreateForm = ({
                         if (actionId) {
                           updateReturnShipping({
                             actionId,
-                            custom_amount:
-                              typeof customShippingAmount === "string"
-                                ? null
-                                : customShippingAmount,
+                            custom_amount: customShippingAmount.float,
                           })
                         }
                         setIsShippingPriceEdit(false)
@@ -682,10 +687,13 @@ export const ReturnCreateForm = ({
                           .symbol_native
                       }
                       code={order.currency_code}
-                      onValueChange={(value) =>
-                        setCustomShippingAmount(value ? parseFloat(value) : "")
+                      onValueChange={(value, name, values) =>
+                        setCustomShippingAmount({
+                          value: values?.value ?? "",
+                          float: values?.float ?? null,
+                        })
                       }
-                      value={customShippingAmount}
+                      value={customShippingAmount.value}
                       disabled={showPlaceholder}
                     />
                   ) : (
@@ -696,11 +704,11 @@ export const ReturnCreateForm = ({
 
               <div className="mt-4 flex items-center justify-between border-t border-dotted pt-4">
                 <span className="txt-small font-medium">
-                  {t("orders.returns.refundAmount")}
+                  {t("orders.returns.estDifference")}
                 </span>
                 <span className="txt-small font-medium">
                   {getStylizedAmount(
-                    refundAmount ? -1 * refundAmount : refundAmount,
+                    preview.summary.pending_difference,
                     order.currency_code
                   )}
                 </span>
@@ -718,7 +726,8 @@ export const ReturnCreateForm = ({
                       <div className="flex items-center">
                         <Form.Control className="mr-4 self-start">
                           <Switch
-                            className="mt-[2px]"
+                            dir="ltr"
+                            className="mt-[2px] rtl:rotate-180"
                             checked={!!value}
                             onCheckedChange={onChange}
                             {...field}

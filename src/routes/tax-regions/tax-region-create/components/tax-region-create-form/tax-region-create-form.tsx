@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { InformationCircleSolid } from "@medusajs/icons"
-import { Button, Heading, Input, Text, Tooltip, toast } from "@medusajs/ui"
+import { Button, Heading, Input, Text, toast, Tooltip } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { Form } from "../../../../../components/common/form"
 import { CountrySelect } from "../../../../../components/inputs/country-select"
@@ -14,24 +14,58 @@ import {
 } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useCreateTaxRegion } from "../../../../../hooks/api"
+import { useComboboxData } from "../../../../../hooks/use-combobox-data"
+import { Combobox } from "../../../../../components/inputs/combobox"
+import { formatProvider } from "../../../../../lib/format-provider"
+import { sdk } from "../../../../../lib/client"
+import { i18n } from "../../../../../components/utilities/i18n"
 
 type TaxRegionCreateFormProps = {
   parentId?: string
 }
 
-const TaxRegionCreateSchema = z.object({
-  name: z.string().optional(),
-  code: z.string().optional(),
-  rate: z.object({
-    float: z.number().optional(),
-    value: z.string().optional(),
-  }),
-  country_code: z.string().min(1),
-})
+const TaxRegionCreateSchema = z
+  .object({
+    name: z.string().optional(),
+    code: z.string().optional(),
+    rate: z.object({
+      float: z.number().optional(),
+      value: z.string().optional(),
+    }),
+    country_code: z.string(),
+    provider_id: z.string(),
+  })
+  .superRefine(({ provider_id, country_code }, ctx) => {
+    if (!provider_id) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: i18n.t("taxRegions.create.errors.missingProvider"),
+        path: ["provider_id"],
+      })
+    }
+
+    if (!country_code) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: i18n.t("taxRegions.create.errors.missingCountry"),
+        path: ["country_code"],
+      })
+    }
+  })
 
 export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
+
+  const taxProviders = useComboboxData({
+    queryKey: ["tax_providers"],
+    queryFn: (params) => sdk.admin.taxProvider.list(params),
+    getOptions: (data) =>
+      data.tax_providers.map((provider) => ({
+        label: formatProvider(provider.id),
+        value: provider.id,
+      })),
+  })
 
   const form = useForm<z.infer<typeof TaxRegionCreateSchema>>({
     defaultValues: {
@@ -41,6 +75,7 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
       },
       code: "",
       country_code: "",
+      provider_id: "",
     },
     resolver: zodResolver(TaxRegionCreateSchema),
   })
@@ -64,6 +99,7 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
         country_code: values.country_code,
         parent_id: parentId,
         default_tax_rate: defaultRate,
+        provider_id: values.provider_id,
       },
       {
         onSuccess: ({ tax_region }) => {
@@ -111,6 +147,29 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
                         </Form.Item>
                       )
                     }}
+                  />
+                  <Form.Field
+                    control={form.control}
+                    name="provider_id"
+                    render={({ field }) => (
+                      <Form.Item>
+                        <Form.Label>
+                          {t("taxRegions.fields.taxProvider")}
+                        </Form.Label>
+                        <Form.Control>
+                          <Combobox
+                            {...field}
+                            options={taxProviders.options}
+                            searchValue={taxProviders.searchValue}
+                            onSearchValueChange={
+                              taxProviders.onSearchValueChange
+                            }
+                            fetchNextPage={taxProviders.fetchNextPage}
+                          />
+                        </Form.Control>
+                        <Form.ErrorMessage />
+                      </Form.Item>
+                    )}
                   />
                 </div>
               </div>
@@ -162,6 +221,7 @@ export const TaxRegionCreateForm = ({ parentId }: TaxRegionCreateFormProps) => {
                               <PercentageInput
                                 {...field}
                                 value={value?.value}
+                                decimalsLimit={4}
                                 onValueChange={(value, _name, values) =>
                                   onChange({
                                     value: value,

@@ -4,15 +4,16 @@ import { useTranslation } from "react-i18next"
 import { useParams } from "react-router-dom"
 
 import { RouteDrawer } from "../../../components/modals"
-import { useCollections } from "../../../hooks/api/collections"
-import { useCustomerGroups } from "../../../hooks/api/customer-groups"
 import { useProductTypes } from "../../../hooks/api/product-types"
 import { useProducts } from "../../../hooks/api/products"
-import { useProductTags } from "../../../hooks/api/tags"
-import { useTaxRate } from "../../../hooks/api/tax-rates"
 import { TaxRateRuleReferenceType } from "../common/constants"
-import { TaxRegionTaxOverrideEditForm } from "./components/tax-region-tax-override-edit-form"
+import {
+  DISPLAY_OVERRIDE_ITEMS_LIMIT,
+  TaxRegionTaxOverrideEditForm,
+} from "./components/tax-region-tax-override-edit-form"
 import { InitialRuleValues } from "./types"
+import { useShippingOptions, useTaxRate } from "../../../hooks/api"
+import { TaxRateRuleReference } from "../common/schemas"
 
 export const TaxRegionTaxOverrideEdit = () => {
   const { t } = useTranslation()
@@ -52,23 +53,26 @@ export const TaxRegionTaxOverrideEdit = () => {
 
 const useDefaultRulesValues = (
   taxRate?: HttpTypes.AdminTaxRate
-): { initialValues?: InitialRuleValues; isPending: boolean } => {
+): { initialValues: InitialRuleValues; isPending: boolean } => {
   const rules = taxRate?.rules || []
 
   const idsByReferenceType: {
     [key in TaxRateRuleReferenceType]: string[]
   } = {
     [TaxRateRuleReferenceType.PRODUCT]: [],
-    [TaxRateRuleReferenceType.PRODUCT_COLLECTION]: [],
-    [TaxRateRuleReferenceType.PRODUCT_TAG]: [],
+    // [TaxRateRuleReferenceType.PRODUCT_COLLECTION]: [],
+    // [TaxRateRuleReferenceType.PRODUCT_TAG]: [],
     [TaxRateRuleReferenceType.PRODUCT_TYPE]: [],
-    [TaxRateRuleReferenceType.CUSTOMER_GROUP]: [],
+    [TaxRateRuleReferenceType.SHIPPING_OPTION]: [],
+    // [TaxRateRuleReferenceType.CUSTOMER_GROUP]: [],
   }
 
-  rules.forEach((rule) => {
-    const reference = rule.reference as TaxRateRuleReferenceType
-    idsByReferenceType[reference]?.push(rule.reference_id)
-  })
+  rules
+    .sort((a, b) => a.created_at.localeCompare(b.created_at)) // preffer newer rules for display
+    .forEach((rule) => {
+      const reference = rule.reference as TaxRateRuleReferenceType
+      idsByReferenceType[reference]?.push(rule.reference_id)
+    })
 
   const queries = [
     {
@@ -81,26 +85,26 @@ const useDefaultRulesValues = (
           value: product.id,
         })),
     },
-    {
-      ids: idsByReferenceType[TaxRateRuleReferenceType.PRODUCT_COLLECTION],
-      hook: useCollections,
-      key: TaxRateRuleReferenceType.PRODUCT_COLLECTION,
-      getResult: (result: HttpTypes.AdminCollectionListResponse) =>
-        result.collections.map((collection) => ({
-          label: collection.title!,
-          value: collection.id!,
-        })),
-    },
-    {
-      ids: idsByReferenceType[TaxRateRuleReferenceType.PRODUCT_TAG],
-      hook: useProductTags,
-      key: TaxRateRuleReferenceType.PRODUCT_TAG,
-      getResult: (result: any) =>
-        result.tags.map((tag: any) => ({
-          label: tag.value,
-          value: tag.id,
-        })),
-    },
+    // {
+    //   ids: idsByReferenceType[TaxRateRuleReferenceType.PRODUCT_COLLECTION],
+    //   hook: useCollections,
+    //   key: TaxRateRuleReferenceType.PRODUCT_COLLECTION,
+    //   getResult: (result: HttpTypes.AdminCollectionListResponse) =>
+    //     result.collections.map((collection) => ({
+    //       label: collection.title!,
+    //       value: collection.id!,
+    //     })),
+    // },
+    // {
+    //   ids: idsByReferenceType[TaxRateRuleReferenceType.PRODUCT_TAG],
+    //   hook: useProductTags,
+    //   key: TaxRateRuleReferenceType.PRODUCT_TAG,
+    //   getResult: (result: any) =>
+    //     result.tags.map((tag: any) => ({
+    //       label: tag.value,
+    //       value: tag.id,
+    //     })),
+    // },
     {
       ids: idsByReferenceType[TaxRateRuleReferenceType.PRODUCT_TYPE],
       hook: useProductTypes,
@@ -112,25 +116,48 @@ const useDefaultRulesValues = (
         })),
     },
     {
-      ids: idsByReferenceType[TaxRateRuleReferenceType.CUSTOMER_GROUP],
-      hook: useCustomerGroups,
-      key: TaxRateRuleReferenceType.CUSTOMER_GROUP,
-      getResult: (
-        result: HttpTypes.PaginatedResponse<{
-          customer_groups: HttpTypes.AdminCustomerGroup[]
-        }>
-      ) =>
-        result.customer_groups.map((customerGroup) => ({
-          label: customerGroup.name!,
-          value: customerGroup.id,
+      ids: idsByReferenceType[TaxRateRuleReferenceType.SHIPPING_OPTION],
+      hook: useShippingOptions,
+      key: TaxRateRuleReferenceType.SHIPPING_OPTION,
+      getResult: (result: HttpTypes.AdminShippingOptionListResponse) =>
+        result.shipping_options.map((shippingOption) => ({
+          label: shippingOption.name,
+          value: shippingOption.id,
         })),
     },
+    // {
+    //   ids: idsByReferenceType[TaxRateRuleReferenceType.CUSTOMER_GROUP],
+    //   hook: useCustomerGroups,
+    //   key: TaxRateRuleReferenceType.CUSTOMER_GROUP,
+    //   getResult: (
+    //     result: HttpTypes.PaginatedResponse<{
+    //       customer_groups: HttpTypes.AdminCustomerGroup[]
+    //     }>
+    //   ) =>
+    //     result.customer_groups.map((customerGroup) => ({
+    //       label: customerGroup.name!,
+    //       value: customerGroup.id,
+    //     })),
+    // },
   ]
 
   const queryResults = queries.map(({ ids, hook }) => {
     const enabled = ids.length > 0
+
     return {
-      result: hook({ id: ids, limit: ids.length }, { enabled }),
+      result: hook(
+        {
+          /**
+           * Limit fetch to 10 resources for display
+           */
+          id:
+            ids.length > DISPLAY_OVERRIDE_ITEMS_LIMIT
+              ? ids.slice(0, DISPLAY_OVERRIDE_ITEMS_LIMIT)
+              : ids,
+          limit: DISPLAY_OVERRIDE_ITEMS_LIMIT,
+        },
+        { enabled }
+      ),
       enabled,
     }
   })
@@ -154,12 +181,29 @@ const useDefaultRulesValues = (
   })
 
   const initialRulesValues: InitialRuleValues = queries.reduce(
-    (acc, { key, getResult }, index) => ({
-      ...acc,
-      [key]: queryResults[index].enabled
-        ? getResult(queryResults[index].result)
-        : [],
-    }),
+    (acc, { key, getResult }, index) => {
+      let initialValues: TaxRateRuleReference[] = []
+
+      if (queryResults[index].enabled) {
+        const fetchedEntityList = getResult(queryResults[index].result)
+
+        const entityIdMap = new Map(
+          fetchedEntityList.map((entity) => [entity.value, entity])
+        )
+
+        const initialIds = idsByReferenceType[key]
+
+        initialValues = initialIds.map((id) => ({
+          value: id,
+          label: entityIdMap.get(id)?.label || "",
+        }))
+      }
+
+      return {
+        ...acc,
+        [key]: initialValues,
+      }
+    },
     {} as InitialRuleValues
   )
 

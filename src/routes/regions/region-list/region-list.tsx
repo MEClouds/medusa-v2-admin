@@ -1,9 +1,9 @@
 import { SingleColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 import { RegionListTable } from "./components/region-list-table"
 
 export const RegionList = () => {
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   return (
     <SingleColumnPage

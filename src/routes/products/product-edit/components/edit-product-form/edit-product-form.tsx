@@ -6,15 +6,14 @@ import { HttpTypes } from "@medusajs/types"
 import { Form } from "../../../../../components/common/form"
 import { SwitchBox } from "../../../../../components/common/switch-box"
 import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
-import { useExtendableForm } from "../../../../../extensions/forms/hooks"
+import { useExtendableForm } from "../../../../../dashboard-app/forms/hooks"
 import { useUpdateProduct } from "../../../../../hooks/api/products"
 import { transformNullableFormData } from "../../../../../lib/form-helpers"
 
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import {
-  FormExtensionZone,
-  useDashboardExtension,
-} from "../../../../../extensions"
+import { FormExtensionZone } from "../../../../../dashboard-app"
+import { useExtension } from "../../../../../providers/extension-provider"
+import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
 
 type EditProductFormProps = {
   product: HttpTypes.AdminProduct
@@ -33,8 +32,8 @@ const EditProductSchema = zod.object({
 export const EditProductForm = ({ product }: EditProductFormProps) => {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
-
-  const { getFormFields, getFormConfigs } = useDashboardExtension()
+  const direction = useDocumentDirection()
+  const { getFormFields, getFormConfigs } = useExtension()
   const fields = getFormFields("product", "edit")
   const configs = getFormConfigs("product", "edit")
 
@@ -99,7 +98,11 @@ export const EditProductForm = ({ product }: EditProductFormProps) => {
                     <Form.Item>
                       <Form.Label>{t("fields.status")}</Form.Label>
                       <Form.Control>
-                        <Select {...field} onValueChange={onChange}>
+                        <Select
+                          dir={direction}
+                          {...field}
+                          onValueChange={onChange}
+                        >
                           <Select.Trigger ref={ref}>
                             <Select.Value />
                           </Select.Trigger>

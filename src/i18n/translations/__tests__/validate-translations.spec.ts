@@ -56,6 +56,7 @@ describe("translation schema validation", () => {
     if (missingInTranslations.length > 0) {
       console.error("\nMissing keys in en.json:", missingInTranslations)
     }
+
     if (extraInTranslations.length > 0) {
       console.error("\nExtra keys in en.json:", extraInTranslations)
     }

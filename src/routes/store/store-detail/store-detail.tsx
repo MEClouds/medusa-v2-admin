@@ -1,13 +1,13 @@
 import { useLoaderData } from "react-router-dom"
 
-import { useStore } from "../../../hooks/api/store.tsx"
-import { StoreCurrencySection } from "./components/store-currency-section/store-currencies-section.tsx/index.ts"
-import { StoreGeneralSection } from "./components/store-general-section/index.ts"
-import { storeLoader } from "./loader.ts"
+import { useStore } from "../../../hooks/api/store"
+import { StoreGeneralSection } from "./components/store-general-section"
+import { storeLoader } from "./loader"
 
-import { SingleColumnPageSkeleton } from "../../../components/common/skeleton/skeleton.tsx"
-import { SingleColumnPage } from "../../../components/layout/pages/index.ts"
-import { useDashboardExtension } from "../../../extensions/index.ts"
+import { SingleColumnPageSkeleton } from "../../../components/common/skeleton"
+import { SingleColumnPage } from "../../../components/layout/pages"
+import { useExtension } from "../../../providers/extension-provider"
+import { StoreCurrencySection } from "./components/store-currency-section"
 
 export const StoreDetail = () => {
   const initialData = useLoaderData() as Awaited<ReturnType<typeof storeLoader>>
@@ -16,7 +16,7 @@ export const StoreDetail = () => {
     initialData,
   })
 
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   if (isPending || !store) {
     return <SingleColumnPageSkeleton sections={2} showJSON showMetadata />

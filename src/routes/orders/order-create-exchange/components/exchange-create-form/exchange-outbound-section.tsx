@@ -23,13 +23,14 @@ import {
   useRemoveExchangeOutboundItem,
   useUpdateExchangeOutboundItems,
 } from "../../../../../hooks/api/exchanges"
-import { useShippingOptions } from "../../../../../hooks/api/shipping-options"
 import { sdk } from "../../../../../lib/client"
 import { OutboundShippingPlaceholder } from "../../../common/placeholders"
 import { ItemPlaceholder } from "../../../order-create-claim/components/claim-create-form/item-placeholder"
 import { AddExchangeOutboundItemsTable } from "../add-exchange-outbound-items-table"
 import { ExchangeOutboundItem } from "./exchange-outbound-item"
+import { useOrderShippingOptions } from "../../../../../hooks/api/orders"
 import { CreateExchangeSchemaType } from "./schema"
+import { getFormattedShippingOptionLocationName } from "../../../../../lib/shipping-options"
 
 type ExchangeOutboundSectionProps = {
   order: AdminOrder
@@ -57,10 +58,13 @@ export const ExchangeOutboundSection = ({
   /**
    * HOOKS
    */
-  const { shipping_options = [] } = useShippingOptions({
-    limit: 999,
-    fields: "*prices,+service_zone.fulfillment_set.location.id",
-  })
+  const { shipping_options = [] } = useOrderShippingOptions(order.id)
+
+  // TODO: filter in the API when boolean filter is supported and fulfillment module support partial rule SO filtering
+  const outboundShippingOptions = shipping_options.filter(
+    (so) =>
+      !so.rules?.find((r) => r.attribute === "is_return" && r.value === "true")
+  )
 
   const { mutateAsync: addOutboundShipping } = useAddExchangeOutboundShipping(
     exchange.id,
@@ -198,11 +202,13 @@ export const ExchangeOutboundSection = ({
     if (outboundShipping) {
       form.setValue("outbound_option_id", outboundShipping.shipping_option_id)
     } else {
-      form.setValue("outbound_option_id", null)
+      form.setValue("outbound_option_id", "")
     }
   }, [preview.shipping_methods])
 
-  const onShippingOptionChange = async (selectedOptionId: string) => {
+  const onShippingOptionChange = async (
+    selectedOptionId: string | undefined
+  ) => {
     const outboundShippingMethods = preview.shipping_methods.filter(
       (s) =>
         !!s.actions?.find((a) => a.action === "SHIPPING_ADD" && !a.return_id)
@@ -222,14 +228,16 @@ export const ExchangeOutboundSection = ({
 
     await Promise.all(promises)
 
-    await addOutboundShipping(
-      { shipping_option_id: selectedOptionId },
-      {
-        onError: (error) => {
-          toast.error(error.message)
-        },
-      }
-    )
+    if (selectedOptionId) {
+      await addOutboundShipping(
+        { shipping_option_id: selectedOptionId },
+        {
+          onError: (error) => {
+            toast.error(error.message)
+          },
+        }
+      )
+    }
   }
 
   const showLevelsWarning = useMemo(() => {
@@ -268,11 +276,12 @@ export const ExchangeOutboundSection = ({
       const variantIds = outboundItems
         .map((item) => item?.variant_id)
         .filter(Boolean)
+
       const variants = (
-        await sdk.admin.productVariant.list(
-          { id: variantIds },
-          { fields: "*inventory,*inventory.location_levels" }
-        )
+        await sdk.admin.productVariant.list({
+          id: variantIds,
+          fields: "*inventory.location_levels",
+        })
       ).variants
 
       variants.forEach((variant) => {
@@ -403,18 +412,19 @@ export const ExchangeOutboundSection = ({
                   <Form.Item>
                     <Form.Control>
                       <Combobox
+                        allowClear
                         noResultsPlaceholder={<OutboundShippingPlaceholder />}
                         value={value ?? undefined}
                         onChange={(val) => {
                           onChange(val)
-                          val && onShippingOptionChange(val)
+                          onShippingOptionChange(val)
                         }}
                         {...field}
-                        options={shipping_options.map((so) => ({
-                          label: so.name,
+                        options={outboundShippingOptions.map((so) => ({
+                          label: `${so.name} (${getFormattedShippingOptionLocationName(so)})`,
                           value: so.id,
                         }))}
-                        disabled={!shipping_options.length}
+                        disabled={!outboundShippingOptions.length}
                       />
                     </Form.Control>
                   </Form.Item>

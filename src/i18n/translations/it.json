@@ -298,6 +298,9 @@
     }
   },
   "filters": {
+    "sortLabel": "Ordina",
+    "filterLabel": "Filtra",
+    "searchLabel": "Cerca",
     "date": {
       "today": "Oggi",
       "lastSevenDays": "Ultimi 7 giorni",
@@ -306,7 +309,9 @@
       "lastTwelveMonths": "Ultimi 12 mesi",
       "custom": "Personalizzato",
       "from": "Da",
-      "to": "A"
+      "to": "A",
+      "starting": "Inizio",
+      "ending": "Fine"
     },
     "compare": {
       "lessThan": "Meno di",
@@ -316,6 +321,12 @@
       "lessThanLabel": "meno di {{value}}",
       "greaterThanLabel": "maggiore di {{value}}",
       "andLabel": "e"
+    },
+    "sorting": {
+      "alphabeticallyAsc": "A - Z",
+      "alphabeticallyDesc": "Z - A",
+      "dateAsc": "Più recente",
+      "dateDesc": "Meno recente"
     },
     "radio": {
       "yes": "Sì",
@@ -526,18 +537,22 @@
     "fields": {
       "title": {
         "label": "Titolo",
-        "hint": "Dai al tuo prodotto un titolo breve e chiaro.<0/>50-60 caratteri è la lunghezza consigliata per i motori di ricerca."
+        "hint": "Dai al tuo prodotto un titolo breve e chiaro.<0/>50-60 caratteri è la lunghezza consigliata per i motori di ricerca.",
+        "placeholder": "Giacca invernale"
       },
       "subtitle": {
-        "label": "Sottotitolo"
+        "label": "Sottotitolo",
+        "placeholder": "Caldo e accogliente"
       },
       "handle": {
         "label": "Handle",
-        "tooltip": "L'handle è usato per fare riferimento al prodotto nel tuo negozio. Se non specificato, l'handle sarà generato dal titolo del prodotto."
+        "tooltip": "L'handle è usato per fare riferimento al prodotto nel tuo negozio. Se non specificato, l'handle sarà generato dal titolo del prodotto.",
+        "placeholder": "giacca-invernale"
       },
       "description": {
         "label": "Descrizione",
-        "hint": "Dai al tuo prodotto una descrizione breve e chiara.<0/>120-160 caratteri è la lunghezza consigliata per i motori di ricerca."
+        "hint": "Dai al tuo prodotto una descrizione breve e chiara.<0/>120-160 caratteri è la lunghezza consigliata per i motori di ricerca.",
+        "placeholder": "Una giacca calda e accogliente"
       },
       "discountable": {
         "label": "Scontabile",

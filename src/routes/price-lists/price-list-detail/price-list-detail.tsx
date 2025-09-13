@@ -7,13 +7,13 @@ import { PriceListProductSection } from "./components/price-list-product-section
 
 import { TwoColumnPageSkeleton } from "../../../components/common/skeleton"
 import { TwoColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 
 export const PriceListDetails = () => {
   const { id } = useParams()
 
   const { price_list, isLoading, isError, error } = usePriceList(id!)
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   if (isLoading || !price_list) {
     return (

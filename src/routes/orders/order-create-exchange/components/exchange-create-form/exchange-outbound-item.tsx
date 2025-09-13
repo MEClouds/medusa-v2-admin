@@ -49,7 +49,7 @@ function ExchangeOutboundItem({
               )}
             </div>
             <Text as="div" className="text-ui-fg-subtle txt-small">
-              {previewItem.product_title}
+              {previewItem.subtitle}
             </Text>
           </div>
         </div>

@@ -8,10 +8,10 @@ import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import {
   FormExtensionZone,
-  useDashboardExtension,
   useExtendableForm,
-} from "../../../../../extensions"
+} from "../../../../../dashboard-app"
 import { useUpdateProduct } from "../../../../../hooks/api/products"
+import { useExtension } from "../../../../../providers/extension-provider"
 
 type ProductAttributesFormProps = {
   product: HttpTypes.AdminProduct
@@ -43,7 +43,7 @@ export const ProductAttributesForm = ({
 }: ProductAttributesFormProps) => {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
-  const { getFormConfigs, getFormFields } = useDashboardExtension()
+  const { getFormConfigs, getFormFields } = useExtension()
 
   const configs = getFormConfigs("product", "attributes")
   const fields = getFormFields("product", "attributes")
@@ -68,10 +68,10 @@ export const ProductAttributesForm = ({
   const handleSubmit = form.handleSubmit(async (data) => {
     await mutateAsync(
       {
-        weight: data.weight ? data.weight : undefined,
-        length: data.length ? data.length : undefined,
-        width: data.width ? data.width : undefined,
-        height: data.height ? data.height : undefined,
+        weight: data.weight ? data.weight : null,
+        length: data.length ? data.length : null,
+        width: data.width ? data.width : null,
+        height: data.height ? data.height : null,
         mid_code: data.mid_code,
         hs_code: data.hs_code,
         origin_country: data.origin_country,

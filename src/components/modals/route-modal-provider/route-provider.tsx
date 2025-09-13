@@ -1,9 +1,9 @@
 import { PropsWithChildren, useCallback, useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Path, useNavigate } from "react-router-dom"
 import { RouteModalProviderContext } from "./route-modal-context"
 
 type RouteModalProviderProps = PropsWithChildren<{
-  prev: string
+  prev: string | Partial<Path>
 }>
 
 export const RouteModalProvider = ({

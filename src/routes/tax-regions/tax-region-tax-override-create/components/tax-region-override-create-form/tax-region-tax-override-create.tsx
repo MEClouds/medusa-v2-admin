@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Button,
+  clx,
   Divider,
   Heading,
   Hint,
@@ -8,7 +9,6 @@ import {
   Label,
   Select,
   Text,
-  clx,
   toast,
 } from "@medusajs/ui"
 import { useFieldArray, useForm, useWatch } from "react-hook-form"
@@ -36,6 +36,7 @@ import {
   TaxRateRuleReferenceSchema,
 } from "../../../common/schemas"
 import { createTaxRulePayload } from "../../../common/utils"
+import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
 
 const TaxRegionCreateTaxOverrideSchema = z.object({
   name: z.string().min(1),
@@ -50,12 +51,14 @@ const TaxRegionCreateTaxOverrideSchema = z.object({
   enabled_rules: z.object({
     product: z.boolean(),
     product_type: z.boolean(),
+    shipping_option: z.boolean(),
     // product_collection: z.boolean(),
     // product_tag: z.boolean(),
     // customer_group: z.boolean(),
   }),
   product: z.array(TaxRateRuleReferenceSchema).optional(),
   product_type: z.array(TaxRateRuleReferenceSchema).optional(),
+  shipping_option: z.array(TaxRateRuleReferenceSchema).optional(),
   // product_collection: z.array(TaxRateRuleReferenceSchema).optional(),
   // product_tag: z.array(TaxRateRuleReferenceSchema).optional(),
   // customer_group: z.array(TaxRateRuleReferenceSchema).optional(),
@@ -75,7 +78,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
   const { setIsOpen } = useStackedModal()
-
+  const direction = useDocumentDirection()
   const form = useForm<z.infer<typeof TaxRegionCreateTaxOverrideSchema>>({
     defaultValues: {
       name: "",
@@ -87,12 +90,14 @@ export const TaxRegionCreateTaxOverrideForm = ({
       enabled_rules: {
         product: true,
         product_type: false,
+        shipping_option: false,
         // product_collection: false,
         // product_tag: false,
         // customer_group: false,
       },
       product: [],
       product_type: [],
+      shipping_option: [],
       // product_collection: [],
       // product_tag: [],
       // customer_group: [],
@@ -109,6 +114,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
       // customer_group,
       // product_collection,
       // product_tag,
+      shipping_option,
     } = values
 
     const productRules = createTaxRulePayload({
@@ -118,6 +124,10 @@ export const TaxRegionCreateTaxOverrideForm = ({
     const productTypeRules = createTaxRulePayload({
       reference_type: TaxRateRuleReferenceType.PRODUCT_TYPE,
       references: product_type || [],
+    })
+    const shippingOptionRules = createTaxRulePayload({
+      reference_type: TaxRateRuleReferenceType.SHIPPING_OPTION,
+      references: shipping_option || [],
     })
     // const customerGroupRules = createTaxRulePayload({
     //   reference_type: TaxRateRuleReferenceType.CUSTOMER_GROUP,
@@ -135,6 +145,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
     const rules = [
       productRules,
       productTypeRules,
+      shippingOptionRules,
       // customerGroupRules,
       // productCollectionRules,
       // productTagRules,
@@ -173,6 +184,11 @@ export const TaxRegionCreateTaxOverrideForm = ({
     name: TaxRateRuleReferenceType.PRODUCT_TYPE,
   })
 
+  const shippingOptions = useFieldArray({
+    control: form.control,
+    name: TaxRateRuleReferenceType.SHIPPING_OPTION,
+  })
+
   // const productCollections = useFieldArray({
   //   control: form.control,
   //   name: TaxRateRuleReferenceType.PRODUCT_COLLECTION,
@@ -195,6 +211,8 @@ export const TaxRegionCreateTaxOverrideForm = ({
         return products
       case TaxRateRuleReferenceType.PRODUCT_TYPE:
         return productTypes
+      case TaxRateRuleReferenceType.SHIPPING_OPTION:
+        return shippingOptions
       // case TaxRateRuleReferenceType.PRODUCT_COLLECTION:
       //   return productCollections
       // case TaxRateRuleReferenceType.PRODUCT_TAG:
@@ -212,6 +230,10 @@ export const TaxRegionCreateTaxOverrideForm = ({
     {
       value: TaxRateRuleReferenceType.PRODUCT_TYPE,
       label: t("taxRegions.fields.targets.options.productType"),
+    },
+    {
+      value: TaxRateRuleReferenceType.SHIPPING_OPTION,
+      label: t("taxRegions.fields.targets.options.shippingOption"),
     },
     // {
     //   value: TaxRateRuleReferenceType.PRODUCT_COLLECTION,
@@ -233,6 +255,9 @@ export const TaxRegionCreateTaxOverrideForm = ({
     ),
     [TaxRateRuleReferenceType.PRODUCT_TYPE]: t(
       "taxRegions.fields.targets.placeholders.productType"
+    ),
+    [TaxRateRuleReferenceType.SHIPPING_OPTION]: t(
+      "taxRegions.fields.targets.placeholders.shippingOption"
     ),
     // [TaxRateRuleReferenceType.PRODUCT_COLLECTION]: t(
     //   "taxRegions.fields.targets.placeholders.productCollection"
@@ -390,6 +415,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
                               <PercentageInput
                                 {...field}
                                 placeholder="0.00"
+                                decimalsLimit={4}
                                 value={value?.value}
                                 onValueChange={(value, _name, values) =>
                                   onChange({
@@ -522,6 +548,7 @@ export const TaxRegionCreateTaxOverrideForm = ({
                                   <div className="text-ui-fg-subtle grid gap-1.5 px-1.5 md:grid-cols-2">
                                     {isLast ? (
                                       <Select
+                                        dir={direction}
                                         value={type}
                                         onValueChange={handleChangeType}
                                       >

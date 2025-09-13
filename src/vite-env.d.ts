@@ -8,6 +8,9 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv
+  readonly hot: {
+    accept: () => void
+  }
 }
 
 declare const __BACKEND_URL__: string | undefined

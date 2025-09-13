@@ -74,6 +74,30 @@ export const useCreateTaxRegion = (
   })
 }
 
+export const useUpdateTaxRegion = (
+  id: string,
+  query?: HttpTypes.AdminTaxRegionParams,
+  options?: UseMutationOptions<
+    HttpTypes.AdminTaxRegionResponse,
+    FetchError,
+    HttpTypes.AdminUpdateTaxRegion,
+    QueryKey
+  >
+) => {
+  return useMutation({
+    mutationFn: (payload) => sdk.admin.taxRegion.update(id, payload, query),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: taxRegionsQueryKeys.detail(id),
+      })
+      queryClient.invalidateQueries({ queryKey: taxRegionsQueryKeys.lists() })
+
+      options?.onSuccess?.(data, variables, context)
+    },
+    ...options,
+  })
+}
+
 export const useDeleteTaxRegion = (
   id: string,
   options?: UseMutationOptions<

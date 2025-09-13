@@ -4,7 +4,7 @@ import { useProductVariant } from "../../../hooks/api/products"
 
 import { TwoColumnPageSkeleton } from "../../../components/common/skeleton"
 import { TwoColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 import { VariantGeneralSection } from "./components/variant-general-section"
 import {
   InventorySectionPlaceholder,
@@ -29,7 +29,7 @@ export const ProductVariantDetail = () => {
     }
   )
 
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   if (isLoading || !variant) {
     return (

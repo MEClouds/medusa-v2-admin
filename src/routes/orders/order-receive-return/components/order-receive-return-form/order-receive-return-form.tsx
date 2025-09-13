@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ArrrowRight } from "@medusajs/icons"
+import { ArrowRight } from "@medusajs/icons"
 import { AdminOrder, AdminReturn } from "@medusajs/types"
 import { Alert, Button, Input, Switch, Text, toast } from "@medusajs/ui"
 import { useEffect, useMemo } from "react"
@@ -219,7 +219,7 @@ export function OrderReceiveReturnForm({
             <div>
               {stock_location && (
                 <div className="flex items-center gap-2">
-                  <ArrrowRight className="text-ui-fg-subtle" />{" "}
+                  <ArrowRight className="text-ui-fg-subtle" />{" "}
                   <span className="text-ui-fg-base txt-small font-medium">
                     {stock_location.name}
                   </span>
@@ -345,7 +345,8 @@ export function OrderReceiveReturnForm({
                     <div className="flex items-center gap-3">
                       <Form.Control>
                         <Switch
-                          className="mt-1 self-start"
+                          dir="ltr"
+                          className="mt-1 self-start rtl:rotate-180"
                           checked={!!value}
                           onCheckedChange={onChange}
                           {...field}

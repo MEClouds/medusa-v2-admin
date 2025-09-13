@@ -14,6 +14,9 @@ import { customerGroupsQueryKeys } from "./customer-groups"
 
 const CUSTOMERS_QUERY_KEY = "customers" as const
 export const customersQueryKeys = queryKeysFactory(CUSTOMERS_QUERY_KEY)
+export const customerAddressesQueryKeys = queryKeysFactory(
+  `${CUSTOMERS_QUERY_KEY}-addresses`
+)
 
 export const useCustomer = (
   id: string,
@@ -147,4 +150,114 @@ export const useBatchCustomerCustomerGroups = (
     },
     ...options,
   })
+}
+
+export const useCreateCustomerAddress = (
+  id: string,
+  options?: UseMutationOptions<
+    HttpTypes.AdminCustomerResponse,
+    FetchError,
+    HttpTypes.AdminCreateCustomerAddress
+  >
+) => {
+  return useMutation({
+    mutationFn: (payload) => sdk.admin.customer.createAddress(id, payload),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.detail(id) })
+      queryClient.invalidateQueries({
+        queryKey: customerAddressesQueryKeys.list(id),
+      })
+
+      options?.onSuccess?.(data, variables, context)
+    },
+    ...options,
+  })
+}
+
+export const useUpdateCustomerAddress = (
+  id: string,
+  addressId: string,
+  options?: UseMutationOptions<
+    HttpTypes.AdminCustomerResponse,
+    FetchError,
+    HttpTypes.AdminUpdateCustomerAddress
+  >
+) => {
+  return useMutation({
+    mutationFn: (payload) =>
+      sdk.admin.customer.updateAddress(id, addressId, payload),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.detail(id) })
+      queryClient.invalidateQueries({
+        queryKey: customerAddressesQueryKeys.list(id),
+      })
+
+      options?.onSuccess?.(data, variables, context)
+    },
+    ...options,
+  })
+}
+
+export const useDeleteCustomerAddress = (
+  id: string,
+  options?: UseMutationOptions<
+    HttpTypes.AdminCustomerResponse,
+    FetchError,
+    string
+  >
+) => {
+  return useMutation({
+    mutationFn: (addressId: string) =>
+      sdk.admin.customer.deleteAddress(id, addressId),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: customersQueryKeys.detail(id) })
+      queryClient.invalidateQueries({
+        queryKey: customerAddressesQueryKeys.list(id),
+      })
+
+      options?.onSuccess?.(data, variables, context)
+    },
+    ...options,
+  })
+}
+
+export const useListCustomerAddresses = (
+  id: string,
+  query?: Record<string, any>,
+  options?: UseQueryOptions<
+    HttpTypes.AdminCustomerResponse,
+    FetchError,
+    HttpTypes.AdminCustomerResponse,
+    QueryKey
+  >
+) => {
+  const { data, ...rest } = useQuery({
+    queryFn: () => sdk.admin.customer.listAddresses(id, query),
+    queryKey: customerAddressesQueryKeys.list(id),
+    ...options,
+  })
+
+  return { ...data, ...rest }
+}
+
+export const useCustomerAddress = (
+  id: string,
+  addressId: string,
+  options?: UseQueryOptions<
+    HttpTypes.AdminCustomerResponse,
+    FetchError,
+    HttpTypes.AdminCustomerResponse,
+    QueryKey
+  >
+) => {
+  const { data, ...rest } = useQuery({
+    queryFn: () => sdk.admin.customer.retrieveAddress(id, addressId),
+    queryKey: customerAddressesQueryKeys.detail(id),
+    ...options,
+  })
+
+  return { ...data, ...rest }
 }

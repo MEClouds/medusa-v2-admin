@@ -525,18 +525,22 @@
     "fields": {
       "title": {
         "label": "Título",
-        "hint": "Dale a tu producto un título corto y claro.<0/>Se recomienda una longitud de 50-60 caracteres para los motores de búsqueda."
+        "hint": "Dale a tu producto un título corto y claro.<0/>Se recomienda una longitud de 50-60 caracteres para los motores de búsqueda.",
+        "placeholder": "Chaqueta de invierno"
       },
       "subtitle": {
-        "label": "Subtítulo"
+        "label": "Subtítulo",
+        "placeholder": "Cálido y acogedor"
       },
       "handle": {
         "label": "Manejador",
-        "tooltip": "El manejador se usa para hacer referencia al producto en tu tienda. Si no se especifica, el manejador será generado a partir del título del producto."
+        "tooltip": "El manejador se usa para hacer referencia al producto en tu tienda. Si no se especifica, el manejador será generado a partir del título del producto.",
+        "placeholder": "chaqueta-de-invierno"
       },
       "description": {
         "label": "Descripción",
-        "hint": "Dale a tu producto una descripción corta y clara.<0/>Se recomienda una longitud de 120-160 caracteres para los motores de búsqueda."
+        "hint": "Dale a tu producto una descripción corta y clara.<0/>Se recomienda una longitud de 120-160 caracteres para los motores de búsqueda.",
+        "placeholder": "Una chaqueta cálida y acogedora"
       },
       "discountable": {
         "label": "Descuento aplicable",
@@ -772,6 +776,7 @@
     "manageLocations": "Gestionar ubicaciones",
     "deleteWarning": "Estás a punto de eliminar un ítem de inventario. Esta acción no puede deshacerse.",
     "editItemDetails": "Editar detalles del ítem",
+    "quantityAcrossLocations": "{{quantity}} en {{locations}} ubicaciones",
     "create": {
       "title": "Crear Ítem de Inventario",
       "details": "Detalles",

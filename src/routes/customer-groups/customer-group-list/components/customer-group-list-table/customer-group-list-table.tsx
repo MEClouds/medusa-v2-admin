@@ -1,10 +1,10 @@
 import { PencilSquare, Trash } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import {
-    Container,
-    createDataTableColumnHelper,
-    toast,
-    usePrompt,
+  Container,
+  createDataTableColumnHelper,
+  toast,
+  usePrompt,
 } from "@medusajs/ui"
 import { keepPreviousData } from "@tanstack/react-query"
 import { useCallback, useMemo } from "react"
@@ -14,19 +14,19 @@ import { useNavigate } from "react-router-dom"
 import { DataTable } from "../../../../../components/data-table"
 import { useDataTableDateFilters } from "../../../../../components/data-table/helpers/general/use-data-table-date-filters"
 import { SingleColumnPage } from "../../../../../components/layout/pages"
-import { useDashboardExtension } from "../../../../../extensions"
 import {
-    useCustomerGroups,
-    useDeleteCustomerGroupLazy,
+  useCustomerGroups,
+  useDeleteCustomerGroupLazy,
 } from "../../../../../hooks/api"
 import { useDate } from "../../../../../hooks/use-date"
 import { useQueryParams } from "../../../../../hooks/use-query-params"
+import { useExtension } from "../../../../../providers/extension-provider"
 
 const PAGE_SIZE = 10
 
 export const CustomerGroupListTable = () => {
   const { t } = useTranslation()
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   const { q, order, offset, created_at, updated_at } = useQueryParams([
     "q",

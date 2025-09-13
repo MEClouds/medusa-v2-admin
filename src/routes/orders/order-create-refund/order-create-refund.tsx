@@ -2,7 +2,9 @@ import { Heading } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { useParams } from "react-router-dom"
 import { RouteDrawer } from "../../../components/modals"
-import { useOrder, useRefundReasons } from "../../../hooks/api"
+import { useOrder, usePlugins } from "../../../hooks/api"
+import { getLoyaltyPlugin } from "../../../lib/plugins"
+import { OrderBalanceSettlementForm } from "../order-balance-settlement"
 import { DEFAULT_FIELDS } from "../order-detail/constants"
 import { CreateRefundForm } from "./components/create-refund-form"
 
@@ -13,16 +15,8 @@ export const OrderCreateRefund = () => {
     fields: DEFAULT_FIELDS,
   })
 
-  const {
-    refund_reasons: refundReasons,
-    isLoading: isRefundReasonsLoading,
-    isError: isRefundReasonsError,
-    error: refundReasonsError,
-  } = useRefundReasons()
-
-  if (isRefundReasonsError) {
-    throw refundReasonsError
-  }
+  const { plugins = [] } = usePlugins()
+  const loyaltyPlugin = getLoyaltyPlugin(plugins)
 
   return (
     <RouteDrawer>
@@ -30,9 +24,8 @@ export const OrderCreateRefund = () => {
         <Heading>{t("orders.payment.createRefund")}</Heading>
       </RouteDrawer.Header>
 
-      {order && !isRefundReasonsLoading && refundReasons && (
-        <CreateRefundForm order={order} refundReasons={refundReasons} />
-      )}
+      {order && !loyaltyPlugin && <CreateRefundForm order={order} />}
+      {order && loyaltyPlugin && <OrderBalanceSettlementForm order={order} />}
     </RouteDrawer>
   )
 }

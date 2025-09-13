@@ -11,6 +11,7 @@ import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useUpdatePromotion } from "../../../../../hooks/api/promotions"
 import { CreateCampaignFormFields } from "../../../../campaigns/common/components/create-campaign-form-fields"
 import { CampaignDetails } from "./campaign-details"
+import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
 
 type EditPromotionFormProps = {
   promotion: AdminPromotion
@@ -43,7 +44,7 @@ export const AddCampaignPromotionFields = ({
   })
 
   const selectedCampaign = campaigns.find((c) => c.id === watchCampaignId)
-
+  const direction = useDocumentDirection()
   return (
     <div className="flex flex-col gap-y-8">
       <Form.Field
@@ -56,6 +57,7 @@ export const AddCampaignPromotionFields = ({
 
               <Form.Control>
                 <RadioGroup
+                  dir={direction}
                   className="grid grid-cols-1 gap-3"
                   {...field}
                   value={field.value}
@@ -105,7 +107,11 @@ export const AddCampaignPromotionFields = ({
                 </Form.Label>
 
                 <Form.Control>
-                  <Select onValueChange={onChange} {...field}>
+                  <Select
+                    dir={direction}
+                    onValueChange={onChange}
+                    {...field}
+                  >
                     <Select.Trigger ref={ref}>
                       <Select.Value />
                     </Select.Trigger>

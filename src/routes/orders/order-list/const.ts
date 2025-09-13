@@ -1,4 +1,4 @@
-const DEFAULT_PROPERTIES = [
+export const DEFAULT_PROPERTIES = [
   "id",
   "status",
   "created_at",
@@ -10,7 +10,7 @@ const DEFAULT_PROPERTIES = [
   "currency_code",
 ]
 
-const DEFAULT_RELATIONS = ["*customer", "*sales_channel"]
+export const DEFAULT_RELATIONS = ["*customer", "*sales_channel"]
 
 export const DEFAULT_FIELDS = `${DEFAULT_PROPERTIES.join(
   ","

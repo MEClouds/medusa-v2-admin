@@ -347,7 +347,10 @@ const Fulfillment = ({
                     label: t("actions.cancel"),
                     icon: <XCircle />,
                     onClick: handleCancel,
-                    disabled: !!fulfillment.canceled_at,
+                    disabled:
+                      !!fulfillment.canceled_at ||
+                      !!fulfillment.shipped_at ||
+                      !!fulfillment.delivered_at,
                   },
                 ],
               },

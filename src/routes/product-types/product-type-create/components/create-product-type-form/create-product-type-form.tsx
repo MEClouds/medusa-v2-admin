@@ -34,7 +34,7 @@ export const CreateProductTypeForm = () => {
         onSuccess: ({ product_type }) => {
           toast.success(
             t("productTypes.create.successToast", {
-              value: product_type.value,
+              value: product_type.value.trim(),
             })
           )
 
@@ -49,28 +49,8 @@ export const CreateProductTypeForm = () => {
 
   return (
     <RouteFocusModal.Form form={form}>
-      <KeyboundForm
-        onSubmit={handleSubmit}
-        className="flex flex-col overflow-hidden"
-      >
-        <RouteFocusModal.Header>
-          <div className="flex items-center justify-end gap-x-2">
-            <RouteFocusModal.Close asChild>
-              <Button size="small" variant="secondary">
-                {t("actions.cancel")}
-              </Button>
-            </RouteFocusModal.Close>
-            <Button
-              size="small"
-              variant="primary"
-              type="submit"
-              isLoading={isPending}
-            >
-              {t("actions.create")}
-            </Button>
-          </div>
-        </RouteFocusModal.Header>
-        <RouteFocusModal.Body className="flex flex-col items-center overflow-y-auto p-16">
+      <KeyboundForm onSubmit={handleSubmit} className="flex h-full flex-col">
+        <RouteFocusModal.Body className="flex flex-col items-center overflow-auto p-16">
           <div className="flex w-full max-w-[720px] flex-col gap-y-8">
             <div>
               <Heading>{t("productTypes.create.header")}</Heading>
@@ -97,6 +77,23 @@ export const CreateProductTypeForm = () => {
             </div>
           </div>
         </RouteFocusModal.Body>
+        <RouteFocusModal.Footer>
+          <div className="flex items-center justify-end gap-x-2">
+            <RouteFocusModal.Close asChild>
+              <Button size="small" variant="secondary">
+                {t("actions.cancel")}
+              </Button>
+            </RouteFocusModal.Close>
+            <Button
+              size="small"
+              variant="primary"
+              type="submit"
+              isLoading={isPending}
+            >
+              {t("actions.create")}
+            </Button>
+          </div>
+        </RouteFocusModal.Footer>
       </KeyboundForm>
     </RouteFocusModal.Form>
   )

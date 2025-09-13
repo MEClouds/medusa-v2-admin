@@ -199,7 +199,7 @@ export const ExchangeInboundSection = ({
         inboundShippingMethod.shipping_option_id
       )
     } else {
-      form.setValue("inbound_option_id", null)
+      form.setValue("inbound_option_id", "")
     }
   }, [preview.shipping_methods])
 
@@ -246,7 +246,9 @@ export const ExchangeInboundSection = ({
     await updateReturn({ location_id: selectedLocationId })
   }
 
-  const onShippingOptionChange = async (selectedOptionId: string) => {
+  const onShippingOptionChange = async (
+    selectedOptionId: string | undefined
+  ) => {
     const inboundShippingMethods = preview.shipping_methods.filter((s) =>
       s.actions?.find((a) => a.action === "SHIPPING_ADD" && !!a.return_id)
     )
@@ -265,14 +267,16 @@ export const ExchangeInboundSection = ({
 
     await Promise.all(promises)
 
-    await addInboundShipping(
-      { shipping_option_id: selectedOptionId },
-      {
-        onError: (error) => {
-          toast.error(error.message)
-        },
-      }
-    )
+    if (selectedOptionId) {
+      await addInboundShipping(
+        { shipping_option_id: selectedOptionId },
+        {
+          onError: (error) => {
+            toast.error(error.message)
+          },
+        }
+      )
+    }
   }
 
   const showLevelsWarning = useMemo(() => {
@@ -313,10 +317,10 @@ export const ExchangeInboundSection = ({
         .filter(Boolean)
 
       const variants = (
-        await sdk.admin.productVariant.list(
-          { id: variantIds },
-          { fields: "*inventory,*inventory.location_levels" }
-        )
+        await sdk.admin.productVariant.list({
+          id: variantIds,
+          fields: "*inventory.location_levels",
+        })
       ).variants
 
       variants.forEach((variant) => {
@@ -505,10 +509,11 @@ export const ExchangeInboundSection = ({
                   <Form.Item>
                     <Form.Control>
                       <Combobox
+                        allowClear
                         value={value ?? undefined}
                         onChange={(val) => {
                           onChange(val)
-                          val && onShippingOptionChange(val)
+                          onShippingOptionChange(val)
                         }}
                         {...field}
                         options={inboundShippingOptions.map((so) => ({
