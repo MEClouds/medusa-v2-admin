@@ -20,7 +20,7 @@ import { queryClient } from "../../../../../lib/query-client"
 import { AllocateItemsSchema } from "./constants"
 import { OrderAllocateItemsItem } from "./order-allocate-items-item"
 import { checkInventoryKit } from "./utils"
-import { useDocumentDirection } from "../../../../../../hooks/use-document-direction"
+import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
 
 type OrderAllocateItemsFormProps = {
   order: AdminOrder
