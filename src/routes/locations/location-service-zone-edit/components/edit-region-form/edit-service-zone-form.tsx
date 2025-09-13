@@ -1,11 +1,10 @@
 import { HttpTypes } from "@medusajs/types"
-import { Button, Input, toast } from "@medusajs/ui"
+import { Button, InlineTip, Input, toast } from "@medusajs/ui"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import * as zod from "zod"
 
 import { Form } from "../../../../../components/common/form"
-import { InlineTip } from "../../../../../components/common/inline-tip"
 import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useUpdateFulfillmentSetServiceZone } from "../../../../../hooks/api/fulfillment-sets"
@@ -83,7 +82,9 @@ export const EditServiceZoneForm = ({
                 }}
               />
             </div>
-            <InlineTip>{t("stockLocations.serviceZones.fields.tip")}</InlineTip>
+            <InlineTip label={t("general.tip")}>
+              {t("stockLocations.serviceZones.fields.tip")}
+            </InlineTip>
           </div>
         </RouteDrawer.Body>
         <RouteDrawer.Footer>

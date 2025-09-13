@@ -3,6 +3,7 @@ import { MagnifyingGlass } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import {
   Button,
+  clx,
   Divider,
   Heading,
   Hint,
@@ -10,7 +11,6 @@ import {
   Label,
   Select,
   Text,
-  clx,
   toast,
 } from "@medusajs/ui"
 import { useFieldArray, useForm, useWatch } from "react-hook-form"
@@ -38,6 +38,8 @@ import {
 import { createTaxRulePayload } from "../../../common/utils"
 import { InitialRuleValues } from "../../types"
 
+export const DISPLAY_OVERRIDE_ITEMS_LIMIT = 10
+
 type TaxRegionTaxOverrideEditFormProps = {
   taxRate: HttpTypes.AdminTaxRate
   initialValues: InitialRuleValues
@@ -58,12 +60,14 @@ const TaxRegionTaxRateEditSchema = z.object({
   enabled_rules: z.object({
     product: z.boolean(),
     product_type: z.boolean(),
+    shipping_option: z.boolean(),
     // product_collection: z.boolean(),
     // product_tag: z.boolean(),
     // customer_group: z.boolean(),
   }),
   product: z.array(TaxRateRuleReferenceSchema).optional(),
   product_type: z.array(TaxRateRuleReferenceSchema).optional(),
+  shipping_option: z.array(TaxRateRuleReferenceSchema).optional(),
   // product_collection: z.array(TaxRateRuleReferenceSchema).optional(),
   // product_tag: z.array(TaxRateRuleReferenceSchema).optional(),
   // customer_group: z.array(TaxRateRuleReferenceSchema).optional(),
@@ -89,6 +93,7 @@ export const TaxRegionTaxOverrideEditForm = ({
       enabled_rules: {
         product: initialValues.product.length > 0,
         product_type: initialValues.product_type.length > 0,
+        shipping_option: initialValues.shipping_option.length > 0,
         // customer_groups: initialValues.customer_group.length > 0,
         // product_collections:
         //   initialValues.product_collections.length > 0,
@@ -96,6 +101,7 @@ export const TaxRegionTaxOverrideEditForm = ({
       },
       product: initialValues.product,
       product_type: initialValues.product_type,
+      shipping_option: initialValues.shipping_option,
       // product_collections: initialValues.product_collection,
       // product_tags: initialValues.product_tag,
       // customer_groups: initialValues.customer_group,
@@ -109,6 +115,7 @@ export const TaxRegionTaxOverrideEditForm = ({
     const {
       product,
       product_type,
+      shipping_option,
       // customer_groups,
       // product_collections,
       // product_tags,
@@ -121,6 +128,10 @@ export const TaxRegionTaxOverrideEditForm = ({
     const productTypeRules = createTaxRulePayload({
       reference_type: TaxRateRuleReferenceType.PRODUCT_TYPE,
       references: product_type || [],
+    })
+    const shippingOptionRules = createTaxRulePayload({
+      reference_type: TaxRateRuleReferenceType.SHIPPING_OPTION,
+      references: shipping_option || [],
     })
     // const customerGroupRules = createTaxRulePayload({
     //   reference_type: TaxRateRuleReferenceType.CUSTOMER_GROUP,
@@ -138,6 +149,7 @@ export const TaxRegionTaxOverrideEditForm = ({
     const rules = [
       productRules,
       productTypeRules,
+      shippingOptionRules,
       // customerGroupRules,
       // productCollectionRules,
       // productTagRules,
@@ -175,6 +187,11 @@ export const TaxRegionTaxOverrideEditForm = ({
     name: "product_type",
   })
 
+  const shippingOptions = useFieldArray({
+    control: form.control,
+    name: "shipping_option",
+  })
+
   // const productCollections = useFieldArray({
   //   control: form.control,
   //   name: "product_collection",
@@ -197,6 +214,8 @@ export const TaxRegionTaxOverrideEditForm = ({
         return products
       case TaxRateRuleReferenceType.PRODUCT_TYPE:
         return productTypes
+      case TaxRateRuleReferenceType.SHIPPING_OPTION:
+        return shippingOptions
       // case TaxRateRuleReferenceType.PRODUCT_COLLECTION:
       //   return productCollections
       // case TaxRateRuleReferenceType.PRODUCT_TAG:
@@ -214,6 +233,10 @@ export const TaxRegionTaxOverrideEditForm = ({
     {
       value: TaxRateRuleReferenceType.PRODUCT_TYPE,
       label: t("taxRegions.fields.targets.options.productType"),
+    },
+    {
+      value: TaxRateRuleReferenceType.SHIPPING_OPTION,
+      label: t("taxRegions.fields.targets.options.shippingOption"),
     },
     // {
     //   value: TaxRateRuleReferenceType.PRODUCT_COLLECTION,
@@ -236,6 +259,9 @@ export const TaxRegionTaxOverrideEditForm = ({
     [TaxRateRuleReferenceType.PRODUCT_TYPE]: t(
       "taxRegions.fields.targets.placeholders.productType"
     ),
+    [TaxRateRuleReferenceType.SHIPPING_OPTION]: t(
+      "taxRegions.fields.targets.placeholders.shippingOption"
+    ),
     // [TaxRateRuleReferenceType.PRODUCT_COLLECTION]: t(
     //   "taxRegions.fields.targets.placeholders.productCollection"
     // ),
@@ -248,7 +274,7 @@ export const TaxRegionTaxOverrideEditForm = ({
   }
 
   const getFieldHandler = (type: TaxRateRuleReferenceType) => {
-    const { fields, remove, append } = getControls(type)
+    const { fields, remove, prepend } = getControls(type)
     const modalId = getStackedModalId(type)
 
     return (references: TaxRateRuleReference[]) => {
@@ -272,7 +298,7 @@ export const TaxRegionTaxOverrideEditForm = ({
         }
       }
 
-      append(fieldsToAdd)
+      prepend(fieldsToAdd) // to display newer items first
       setIsOpen(modalId, false)
     }
   }
@@ -388,6 +414,7 @@ export const TaxRegionTaxOverrideEditForm = ({
                       <PercentageInput
                         {...field}
                         value={value?.value}
+                        decimalsLimit={4}
                         onValueChange={(value, _name, values) =>
                           onChange({
                             value: value,
@@ -564,17 +591,33 @@ export const TaxRegionTaxOverrideEditForm = ({
                                 <div className="flex flex-col gap-y-1.5">
                                   <Divider variant="dashed" />
                                   <div className="flex flex-col gap-y-1.5 px-1.5">
-                                    {fields.map((field, index) => {
-                                      return (
-                                        <TargetItem
-                                          key={field.id}
-                                          index={index}
-                                          label={field.label}
-                                          onRemove={remove}
-                                        />
-                                      )
-                                    })}
+                                    {fields
+                                      .slice(0, DISPLAY_OVERRIDE_ITEMS_LIMIT)
+                                      .map((field, index) => {
+                                        return (
+                                          <TargetItem
+                                            key={field.id}
+                                            index={index}
+                                            label={field.label}
+                                            value={field.value}
+                                            onRemove={remove}
+                                          />
+                                        )
+                                      })}
                                   </div>
+                                  {fields.length >
+                                    DISPLAY_OVERRIDE_ITEMS_LIMIT && (
+                                    <div className="flex flex-col gap-y-1.5 px-1.5">
+                                      {/* <Divider variant="dashed" /> */}
+                                      <div className="text-ui-fg-muted txt-small flex flex-col gap-y-1.5 px-1.5">
+                                        {t("general.plusCountMore", {
+                                          count:
+                                            fields.length -
+                                            DISPLAY_OVERRIDE_ITEMS_LIMIT,
+                                        })}
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               ) : null}
                             </div>

@@ -173,7 +173,9 @@ export const ProductCreateOrganizationSection = ({
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <Form.Label>{t("products.fields.shipping_profile.label")}</Form.Label>
+          <Form.Label optional>
+            {t("products.fields.shipping_profile.label")}
+          </Form.Label>
           <Form.Hint>
             <Trans i18nKey={"products.fields.shipping_profile.hint"} />
           </Form.Hint>

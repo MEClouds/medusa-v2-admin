@@ -1,7 +1,7 @@
 import { z } from "zod"
-import { i18n } from "../../../components/utilities/i18n/i18n.tsx"
-import { optionalFloat, optionalInt } from "../../../lib/validation.ts"
-import { decorateVariantsWithDefaultValues } from "./utils.ts"
+import { i18n } from "../../../components/utilities/i18n/i18n"
+import { optionalFloat, optionalInt } from "../../../lib/validation"
+import { decorateVariantsWithDefaultValues } from "./utils"
 
 export const MediaSchema = z.object({
   id: z.string().optional(),
@@ -64,7 +64,7 @@ export const ProductCreateSchema = z
     discountable: z.boolean(),
     type_id: z.string().optional(),
     collection_id: z.string().optional(),
-    shipping_profile_id: z.string(), // TODO: require min(1) when partial validation per tab is added
+    shipping_profile_id: z.string().optional(),
     categories: z.array(z.string()),
     tags: z.array(z.string()).optional(),
     sales_channels: z

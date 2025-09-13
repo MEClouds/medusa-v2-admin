@@ -3,11 +3,11 @@ import { getApiKeyTypeFromPathname } from "../common/utils"
 import { ApiKeyManagementListTable } from "./components/api-key-management-list-table"
 
 import { SingleColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 
 export const ApiKeyManagementList = () => {
   const { pathname } = useLocation()
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   const keyType = getApiKeyTypeFromPathname(pathname)
 

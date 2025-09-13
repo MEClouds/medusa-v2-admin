@@ -2,12 +2,12 @@ import { useLoaderData, useParams } from "react-router-dom"
 
 import { TwoColumnPageSkeleton } from "../../../components/common/skeleton"
 import { TwoColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useInventoryItem } from "../../../hooks/api"
 import { useReservationItem } from "../../../hooks/api/reservations"
+import { useExtension } from "../../../providers/extension-provider"
 import { InventoryItemGeneralSection } from "../../inventory/inventory-detail/components/inventory-item-general-section"
 import { ReservationGeneralSection } from "./components/reservation-general-section"
 import { reservationItemLoader } from "./loader"
-import { useInventoryItem } from "../../../hooks/api"
 
 export const ReservationDetail = () => {
   const { id } = useParams()
@@ -31,7 +31,7 @@ export const ReservationDetail = () => {
     { enabled: !!reservation?.inventory_item?.id! }
   )
 
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   if (isLoading || !reservation) {
     return (

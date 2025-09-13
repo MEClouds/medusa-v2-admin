@@ -12,7 +12,10 @@ export const ProductTypeRowActions = ({
   productType,
 }: ProductTypeRowActionsProps) => {
   const { t } = useTranslation()
-  const handleDelete = useDeleteProductTypeAction(productType.id)
+  const handleDelete = useDeleteProductTypeAction(
+    productType.id,
+    productType.value
+  )
 
   return (
     <ActionMenu

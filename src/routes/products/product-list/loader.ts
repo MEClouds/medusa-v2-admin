@@ -6,8 +6,13 @@ import { sdk } from "../../../lib/client"
 import { queryClient } from "../../../lib/query-client"
 
 const productsListQuery = () => ({
-  queryKey: productsQueryKeys.list({ limit: 20, offset: 0 }),
-  queryFn: async () => sdk.admin.product.list({ limit: 20, offset: 0 }),
+  queryKey: productsQueryKeys.list({
+    limit: 20,
+    offset: 0,
+    is_giftcard: false,
+  }),
+  queryFn: async () =>
+    sdk.admin.product.list({ limit: 20, offset: 0, is_giftcard: false }),
 })
 
 export const productsLoader = (client: QueryClient) => {

@@ -5,7 +5,7 @@ import { useShippingProfile } from "../../../hooks/api/shipping-profiles"
 import { ShippingProfileGeneralSection } from "./components/shipping-profile-general-section"
 
 import { SingleColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 import { shippingProfileLoader } from "./loader"
 
 export const ShippingProfileDetail = () => {
@@ -21,7 +21,7 @@ export const ShippingProfileDetail = () => {
     { initialData }
   )
 
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   if (isLoading || !shipping_profile) {
     return <SingleColumnPageSkeleton sections={1} showJSON showMetadata />

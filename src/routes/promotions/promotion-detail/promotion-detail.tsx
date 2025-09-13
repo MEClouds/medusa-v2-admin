@@ -2,8 +2,8 @@ import { useLoaderData, useParams } from "react-router-dom"
 
 import { TwoColumnPageSkeleton } from "../../../components/common/skeleton"
 import { TwoColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
 import { usePromotion, usePromotionRules } from "../../../hooks/api/promotions"
+import { useExtension } from "../../../providers/extension-provider"
 import { CampaignSection } from "./components/campaign-section"
 import { PromotionConditionsSection } from "./components/promotion-conditions-section"
 import { PromotionGeneralSection } from "./components/promotion-general-section"
@@ -26,7 +26,7 @@ export const PromotionDetail = () => {
   const { rules: targetRules } = usePromotionRules(id!, "target-rules", query)
   const { rules: buyRules } = usePromotionRules(id!, "buy-rules", query)
 
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   if (isLoading || !promotion) {
     return (
@@ -52,11 +52,15 @@ export const PromotionDetail = () => {
         <PromotionConditionsSection
           rules={targetRules || []}
           ruleType={"target-rules"}
+          applicationMethodTargetType={
+            promotion.application_method.target_type || "items"
+          }
         />
         {promotion.type === "buyget" && (
           <PromotionConditionsSection
             rules={buyRules || []}
             ruleType={"buy-rules"}
+            applicationMethodTargetType={"items"}
           />
         )}
       </TwoColumnPage.Main>

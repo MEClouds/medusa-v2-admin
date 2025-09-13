@@ -6,6 +6,9 @@ type UseProductTableQueryProps = {
   pageSize?: number
 }
 
+const DEFAULT_FIELDS =
+  "id,title,handle,status,*collection,*sales_channels,variants.id,thumbnail"
+
 export const useProductTableQuery = ({
   prefix,
   pageSize = 20,
@@ -58,6 +61,7 @@ export const useProductTableQuery = ({
     type_id: type_id?.split(","),
     status: status?.split(",") as HttpTypes.AdminProductStatus[],
     q,
+    fields: DEFAULT_FIELDS,
   }
 
   return {

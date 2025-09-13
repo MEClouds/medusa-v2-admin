@@ -62,7 +62,7 @@ export const useLogout = (options?: UseMutationOptions<void, FetchError>) => {
 
 export const useUpdateProviderForEmailPass = (
   token: string,
-  options?: UseMutationOptions<void, FetchError, { password: string }>
+  options?: UseMutationOptions<void, FetchError, HttpTypes.AdminUpdateProvider>
 ) => {
   return useMutation({
     mutationFn: (payload) =>

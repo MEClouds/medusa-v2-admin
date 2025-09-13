@@ -8,12 +8,10 @@ import {
   useRouteModal,
 } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import {
-  useDashboardExtension,
-  useExtendableForm,
-} from "../../../../../extensions"
+import { useExtendableForm } from "../../../../../dashboard-app/forms/hooks"
 import { useCreateProduct } from "../../../../../hooks/api/products"
 import { sdk } from "../../../../../lib/client"
+import { useExtension } from "../../../../../providers/extension-provider"
 import {
   PRODUCT_CREATE_FORM_DEFAULTS,
   ProductCreateSchema,
@@ -58,7 +56,7 @@ export const ProductCreateForm = ({
 
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
-  const { getFormConfigs } = useDashboardExtension()
+  const { getFormConfigs } = useExtension()
   const configs = getFormConfigs("product", "create")
 
   const form = useExtendableForm({
@@ -181,15 +179,6 @@ export const ProductCreateForm = ({
     }
 
     if (currentTab === Tab.ORGANIZE) {
-      // TODO: this is temp until we add partial validation per tab
-      if (!form.getValues("shipping_profile_id")) {
-        form.setError("shipping_profile_id", {
-          type: "required",
-          message: t("products.shippingProfile.create.errors.required"),
-        })
-        return
-      }
-
       setTab(Tab.VARIANTS)
     }
 
@@ -229,6 +218,13 @@ export const ProductCreateForm = ({
         onKeyDown={(e) => {
           // We want to continue to the next tab on enter instead of saving as draft immediately
           if (e.key === "Enter") {
+            if (
+              e.target instanceof HTMLTextAreaElement &&
+              !(e.metaKey || e.ctrlKey)
+            ) {
+              return
+            }
+
             e.preventDefault()
 
             if (e.metaKey || e.ctrlKey) {

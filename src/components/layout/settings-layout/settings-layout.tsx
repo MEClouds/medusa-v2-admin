@@ -5,10 +5,9 @@ import { Fragment, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
 
+import { useExtension } from "../../../providers/extension-provider"
 import { INavItem, NavItem } from "../nav-item"
 import { Shell } from "../shell"
-
-import { useDashboardExtension } from "../../../extensions"
 import { UserMenu } from "../user-menu"
 
 export const SettingsLayout = () => {
@@ -114,7 +113,7 @@ const getSafeFromValue = (from: string) => {
 }
 
 const SettingsSidebar = () => {
-  const { getMenu } = useDashboardExtension()
+  const { getMenu } = useExtension()
 
   const routes = useSettingRoutes()
   const developerRoutes = useDeveloperRoutes()

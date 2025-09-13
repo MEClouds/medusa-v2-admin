@@ -6,13 +6,13 @@ import { Form } from "../../common/form"
 
 interface HeadlessControllerProps<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
->  extends Omit<ControllerProps<TFieldValues, TName>, "render"> {}
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> extends Omit<ControllerProps<TFieldValues, TName>, "render"> {}
 
 interface SwitchBoxProps<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-> extends HeadlessControllerProps<TFieldValues, TName>{
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> extends HeadlessControllerProps<TFieldValues, TName> {
   label: string
   description: string
   optional?: boolean
@@ -26,13 +26,13 @@ interface SwitchBoxProps<
 
 /**
  * Wrapper for the Switch component to be used with `react-hook-form`.
- * 
+ *
  * Use this component whenever a design calls for wrapping the Switch component
  * in a container with a label and description.
  */
 export const SwitchBox = <
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
   label,
   description,
@@ -49,10 +49,14 @@ export const SwitchBox = <
           <Form.Item>
             <div className="bg-ui-bg-component shadow-elevation-card-rest flex items-start gap-x-3 rounded-lg p-3">
               <Form.Control>
-                <Switch {...field} checked={value} onCheckedChange={(e) => {
-                  onCheckedChange?.(e)
-                  onChange(e)
-                }} />
+                <Switch
+                  {...field}
+                  checked={value}
+                  onCheckedChange={(e) => {
+                    onCheckedChange?.(e)
+                    onChange(e)
+                  }}
+                />
               </Form.Control>
               <div>
                 <Form.Label optional={optional} tooltip={tooltip}>

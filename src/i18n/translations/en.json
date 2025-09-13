@@ -43,6 +43,7 @@
     "plusCount": "+ {{count}}",
     "plusCountMore": "+ {{count}} more",
     "areYouSure": "Are you sure?",
+    "areYouSureDescription": "You are about to delete the {{entity}} {{title}}. This action cannot be undone.",
     "noRecordsFound": "No records found",
     "typeToConfirm": "Please type {val} to confirm:",
     "noResultsTitle": "No results",
@@ -349,6 +350,7 @@
     "backToDashboard": "Back to dashboard"
   },
   "addresses": {
+    "title": "Addresses",
     "shippingAddress": {
       "header": "Shipping Address",
       "editHeader": "Edit Shipping Address",
@@ -537,18 +539,22 @@
     "fields": {
       "title": {
         "label": "Title",
-        "hint": "Give your product a short and clear title.<0/>50-60 characters is the recommended length for search engines."
+        "hint": "Give your product a short and clear title.<0/>50-60 characters is the recommended length for search engines.",
+        "placeholder": "Winter jacket"
       },
       "subtitle": {
-        "label": "Subtitle"
+        "label": "Subtitle",
+        "placeholder": "Warm and cosy"
       },
       "handle": {
         "label": "Handle",
-        "tooltip": "The handle is used to reference the product in your storefront. If not specified, the handle will be generated from the product title."
+        "tooltip": "The handle is used to reference the product in your storefront. If not specified, the handle will be generated from the product title.",
+        "placeholder": "winter-jacket"
       },
       "description": {
         "label": "Description",
-        "hint": "Give your product a short and clear description.<0/>120-160 characters is the recommended length for search engines."
+        "hint": "Give your product a short and clear description.<0/>120-160 characters is the recommended length for search engines.",
+        "placeholder": "A warm and cozy jacket"
       },
       "discountable": {
         "label": "Discountable",
@@ -615,7 +621,7 @@
     "variant": {
       "edit": {
         "header": "Edit Variant",
-        "success": "Product variant edited sucessfully"
+        "success": "Product variant edited successfully"
       },
       "create": {
         "header": "Variant details"
@@ -651,7 +657,7 @@
           "levelsBatch": "Inventory levels updated.",
           "update": "Inventory item updated successfully.",
           "updateLevel": "Inventory level updated successfully.",
-          "itemsManageSuccess": "Inventory items sucessfully updated."
+          "itemsManageSuccess": "Inventory items successfully updated."
         }
       }
     },
@@ -809,8 +815,10 @@
     "locationLevels": "Locations",
     "associatedVariants": "Associated variants",
     "manageLocations": "Manage locations",
+    "manageLocationQuantity": "Manage location quantity",
     "deleteWarning": "You are about to delete an inventory item. This action cannot be undone.",
     "editItemDetails": "Edit item details",
+    "quantityAcrossLocations": "{{quantity}} across {{locations}} locations",
     "create": {
       "title": "Create Inventory Item",
       "details": "Details",
@@ -896,7 +904,7 @@
     "groups": {
       "label": "Customer groups",
       "remove": "Are you sure you want to remove the customer from \"{{name}}\" customer group?",
-      "removeMany": "Are you sure you want to customer from following customer groups: {{groups}}?",
+      "removeMany": "Are you sure you want to remove customer from following customer groups: {{groups}}?",
       "alreadyAddedTooltip": "The customer is already in this customer group.",
       "list": {
         "noRecordsMessage": "This customer doesn't belong to any group."
@@ -931,7 +939,28 @@
     },
     "registered": "Registered",
     "guest": "Guest",
-    "hasAccount": "Has account"
+    "hasAccount": "Has account",
+    "addresses": {
+      "title": "Addresses",
+      "fields": {
+        "addressName": "Address name",
+        "address1": "Address 1",
+        "address2": "Address 2",
+        "city": "City",
+        "province": "Province",
+        "postalCode": "Postal code",
+        "country": "Country",
+        "phone": "Phone",
+        "company": "Company",
+        "countryCode": "Country code",
+        "provinceCode": "Province code"
+      },
+      "create": {
+        "header": "Create Address",
+        "hint": "Create a new address for the customer.",
+        "successToast": "Address was successfully created."
+      }
+    }
   },
   "customerGroups": {
     "domain": "Customer Groups",
@@ -981,6 +1010,31 @@
     }
   },
   "orders": {
+    "giftCardsStoreCreditLines": "Gift cards & credit lines",
+    "creditLines": {
+      "title": "Credit lines",
+      "total": "Sum of all credit lines",
+      "creditOrDebit": "Credit / Debit",
+      "createCreditLine": "Create credit line",
+      "createCreditLineSuccess": "Credit line created successfully",
+      "createCreditLineError": "Error creating credit line",
+      "createCreditLineDescription": "Create a credit line for amount {{amount}}",
+      "operation": "Operation",
+      "credit": "Credit",
+      "creditDescription": "Adds a positive sum to the order",
+      "debit": "Debit",
+      "debitDescription": "Subtracts a negative sum from the order"
+    },
+    "balanceSettlement": {
+      "title": "Balance settlement",
+      "settlementType": "Settlement type",
+      "settlementTypes": {
+        "paymentMethod": "Payment method",
+        "paymentMethodDescription": "Refund amount to the payment method",
+        "creditLine": "Store credit",
+        "creditLineDescription": "Refund amount as store credit"
+      }
+    },
     "domain": "Orders",
     "claim": "Claim",
     "exchange": "Exchange",
@@ -1013,7 +1067,8 @@
       "itemSubtotal": "Item Subtotal",
       "shippingSubtotal": "Shipping Subtotal",
       "discountSubtotal": "Discount Subtotal",
-      "taxTotal": "Tax Total"
+      "taxTotal": "Tax Total",
+      "totalAfterDiscount": "Total After Discount"
     },
     "transfer": {
       "title": "Transfer ownership",
@@ -1027,6 +1082,7 @@
       "title": "Payments",
       "isReadyToBeCaptured": "Payment <0/> is ready to be captured.",
       "totalPaidByCustomer": "Total paid by customer",
+      "totalStoreCreditRefunds": "Total store credit refunds",
       "capture": "Capture payment",
       "capture_short": "Capture",
       "refund": "Refund",
@@ -1110,7 +1166,7 @@
       "sendNotificationHint": "Notify customer about return.",
       "returnTotal": "Return total",
       "inboundTotal": "Inbound total",
-      "refundAmount": "Refund amount",
+      "estDifference": "Estimated difference",
       "outstandingAmount": "Outstanding amount",
       "reason": "Reason",
       "reasonHint": "Choose why the customer want to return items.",
@@ -1250,7 +1306,8 @@
       "consistsOf": "Consists of {{num}}x inventory items",
       "requires": "Requires {{num}} per variant",
       "toast": {
-        "created": "Items successfully allocated"
+        "created": "Items successfully allocated",
+        "error": "Failed to allocate following items: {{items}}"
       },
       "error": {
         "quantityNotAllocated": "There are unallocated items."
@@ -1478,7 +1535,7 @@
       "successToast": "Location {{name}} was successfully updated."
     },
     "delete": {
-      "confirmation": "You are about to delete the stock location {{name}}. This action cannot be undone."
+      "confirmation": "You are about to delete the stock location \"{{name}}\". This action cannot be undone."
     },
     "fulfillmentProviders": {
       "header": "Fulfillment Providers",
@@ -1497,7 +1554,7 @@
         "header": "Shipping"
       },
       "disable": {
-        "confirmation": "Are you sure that you want to disable {{name}}? This will delete all associated service zones and shipping options, and cannot be undone.",
+        "confirmation": "Are you sure that you want to disable \"{{name}}\"? This will delete all associated service zones and shipping options, and cannot be undone.",
         "pickup": "Pickup was successfully disabled.",
         "shipping": "Shipping was successfully disabled."
       },
@@ -1511,6 +1568,10 @@
       "shippingProfiles": {
         "label": "Shipping Profiles",
         "description": "Group products by shipping requirements"
+      },
+      "shippingOptionTypes": {
+        "label": "Shipping Option Types",
+        "description": "Group shipping options by types"
       }
     },
     "salesChannels": {
@@ -1554,7 +1615,7 @@
         "action": "Create option"
       },
       "delete": {
-        "confirmation": "You are about to delete the shipping option {{name}}. This action cannot be undone.",
+        "confirmation": "You are about to delete the shipping option \"{{name}}\". This action cannot be undone.",
         "successToast": "Shipping option {{name}} was successfully deleted."
       },
       "edit": {
@@ -1628,6 +1689,7 @@
         },
         "provider": "Fulfillment provider",
         "profile": "Shipping profile",
+        "type": "Shipping option type",
         "fulfillmentOption": "Fulfillment option"
       }
     },
@@ -1643,7 +1705,7 @@
         "successToast": "Service zone {{name}} was successfully updated."
       },
       "delete": {
-        "confirmation": "You are about to delete the service zone {{name}}. This action cannot be undone.",
+        "confirmation": "You are about to delete the service zone \"{{name}}\". This action cannot be undone.",
         "successToast": "Service zone {{name}} was successfully deleted."
       },
       "manageAreas": {
@@ -1689,10 +1751,15 @@
       "header": "Create Tax Region",
       "hint": "Create a new tax region to define tax rates for a specific country.",
       "errors": {
-        "rateIsRequired": "Tax rate is required when creating a default tax rate.",
-        "nameIsRequired": "Name is required when creating a default tax rate."
+        "missingProvider": "Provider is required when creating a tax region.",
+        "missingCountry": "Country is required when creating a tax region."
       },
       "successToast": "The tax region was successfully created."
+    },
+    "edit": {
+      "header": "Edit Tax Region",
+      "hint": "Edit the tax region details.",
+      "successToast": "The tax region was successfully updated."
     },
     "province": {
       "header": "Provinces",
@@ -1700,6 +1767,9 @@
         "header": "Create Province Tax Region",
         "hint": "Create a new tax region to define tax rates for a specific province."
       }
+    },
+    "provider": {
+      "header": "Tax Provider"
     },
     "state": {
       "header": "States",
@@ -1808,7 +1878,7 @@
         "successToast": "Tax rate was successfully updated."
       },
       "delete": {
-        "confirmation": "You are about to delete the tax rate {{name}}. This action cannot be undone.",
+        "confirmation": "You are about to delete the tax rate \"{{name}}\". This action cannot be undone.",
         "successToast": "Tax rate was successfully deleted."
       }
     },
@@ -1826,6 +1896,7 @@
       },
       "taxRate": "Tax rate",
       "taxCode": "Tax code",
+      "taxProvider": "Tax provider",
       "targets": {
         "label": "Targets",
         "hint": "Select the targets that this tax rate will apply to.",
@@ -1834,7 +1905,8 @@
           "productCollection": "Product collections",
           "productTag": "Product tags",
           "productType": "Product types",
-          "customerGroup": "Customer groups"
+          "customerGroup": "Customer groups",
+          "shippingOption": "Shipping options"
         },
         "operators": {
           "in": "in",
@@ -1846,14 +1918,16 @@
           "productCollection": "Search for product collections",
           "productTag": "Search for product tags",
           "productType": "Search for product types",
-          "customerGroup": "Search for customer groups"
+          "customerGroup": "Search for customer groups",
+          "shippingOption": "Search for shipping options"
         },
         "tags": {
           "product": "Product",
           "productCollection": "Product collection",
           "productTag": "Product tag",
           "productType": "Product type",
-          "customerGroup": "Customer group"
+          "customerGroup": "Customer group",
+          "shippingOption": "Shipping option"
         },
         "modal": {
           "header": "Add targets"
@@ -1931,6 +2005,7 @@
       "allocation": "Allocation",
       "addCondition": "Add condition",
       "clearAll": "Clear all",
+      "taxInclusive": "Tax Inclusive",
       "amount": {
         "tooltip": "Select the currency code to enable setting the amount"
       },
@@ -1940,8 +2015,18 @@
           "description": "Which customer is allowed to use the promotion code? Promotion code can be used by all customers if left untouched."
         },
         "target-rules": {
-          "title": "What items will the promotion be applied to?",
-          "description": "The promotion will be applied to items that match the following conditions."
+          "order": {
+            "title": "What items will the promotion be applied to?",
+            "description": "The promotion will be applied to items that match the following conditions."
+          },
+          "shipping_methods": {
+            "title": "What shipping methods will the promotion be applied to?",
+            "description": "The promotion will be applied to shipping methods that match the following conditions."
+          },
+          "items": {
+            "title": "What items will the promotion be applied to?",
+            "description": "The promotion will be applied to items that match the following conditions."
+          }
         },
         "buy-rules": {
           "title": "What needs to be in the cart to unlock the promotion?",
@@ -2007,6 +2092,10 @@
           "description": "Proceed without associating promotion with campaign"
         }
       },
+      "taxInclusive": {
+        "title": "Does promotion include taxes?",
+        "description": "Enable this field to apply the promotion after taxes"
+      },
       "status": {
         "label": "Status",
         "draft": {
@@ -2062,15 +2151,16 @@
         "description": "The code your customers will enter during checkout."
       },
       "value": {
-        "title": "Promotion Value"
+        "title": "Promotion Value",
+        "invalid": "Invalid promotion value"
       },
       "value_type": {
         "fixed": {
-          "title": "Promotion Value",
+          "title": "Fixed amount",
           "description": "The amount to be discounted. eg. 100"
         },
         "percentage": {
-          "title": "Promotion Value",
+          "title": "Percentage",
           "description": "The percentage to discount off the amount. eg. 8%"
         }
       }
@@ -2183,8 +2273,8 @@
     "domain": "Price Lists",
     "subtitle": "Create sales or override prices for specific conditions.",
     "delete": {
-      "confirmation": "You are about to delete the price list {{title}}. This action cannot be undone.",
-      "successToast": "Price list {{title}} was successfully deleted."
+      "confirmation": "You are about to delete the price list \"{{title}}\". This action cannot be undone.",
+      "successToast": "Price list \"{{title}}\" was successfully deleted."
     },
     "create": {
       "header": "Create Price List",
@@ -2361,7 +2451,7 @@
   },
   "regions": {
     "domain": "Regions",
-    "subtitle": "A region is an area that you sell products in. It can cover multipe countries, and has different tax rates, providers, and currency.",
+    "subtitle": "A region is an area that you sell products in. It can cover multiple countries, and has different tax rates, providers, and currency.",
     "createRegion": "Create Region",
     "createRegionHint": "Manage tax rates and providers for a set of countries.",
     "addCountries": "Add countries",
@@ -2373,7 +2463,7 @@
     "removeCountryWarning": "You are about to remove the country {{name}} from the region. This action cannot be undone.",
     "automaticTaxesHint": "When enabled, taxes will only be calculated at checkout based on the shipping address.",
     "taxInclusiveHint": "When enabled, prices in the region will be tax inclusive.",
-    "providersHint": " Add which payment providers are available in this region.",
+    "providersHint": "Add which payment providers are available in this region.",
     "shippingOptions": "Shipping Options",
     "deleteShippingOptionWarning": "You are about to delete the shipping option {{name}}. This action cannot be undone.",
     "return": "Return",
@@ -2442,7 +2532,6 @@
       "createTaxRate": "Create Tax Rate",
       "createTaxRateHint": "Create a new tax rate for the region.",
       "deleteRateDescription": "You are about to delete the tax rate {{name}}. This action cannot be undone.",
-      "editTaxRate": "Edit Tax Rate",
       "editRateAction": "Edit rate",
       "editOverridesAction": "Edit overrides",
       "editOverridesTitle": "Edit Tax Rate Overrides",
@@ -2472,9 +2561,9 @@
     "removeSalesChannelsWarning_one": "You are about to remove {{count}} sales channel from the location.",
     "removeSalesChannelsWarning_other": "You are about to remove {{count}} sales channels from the location.",
     "toast": {
-      "create": "Location created sucessfully",
-      "update": "Location updated sucessfully",
-      "removeChannel": "Sales channel removed sucessfully"
+      "create": "Location created successfully",
+      "update": "Location updated successfully",
+      "removeChannel": "Sales channel removed successfully"
     }
   },
   "reservations": {
@@ -2620,8 +2709,8 @@
       "successToast": "Return reason {{label}} was successfully updated."
     },
     "delete": {
-      "confirmation": "You are about to delete the return reason {{label}}. This action cannot be undone.",
-      "successToast": "Return reason {{label}} was successfully deleted."
+      "confirmation": "You are about to delete the return reason \"{{label}}\". This action cannot be undone.",
+      "successToast": "Return reason \"{{label}}\" was successfully deleted."
     },
     "fields": {
       "value": {
@@ -2629,7 +2718,10 @@
         "placeholder": "wrong_size",
         "tooltip": "The value should be a unique identifier for the return reason."
       },
-      "label": { "label": "Label", "placeholder": "Wrong size" },
+      "label": {
+        "label": "Label",
+        "placeholder": "Wrong size"
+      },
       "description": {
         "label": "Description",
         "placeholder": "Customer received the wrong size"
@@ -2728,6 +2820,28 @@
       }
     }
   },
+  "shippingOptionTypes": {
+    "domain": "Shipping Option Types",
+    "subtitle": "Organize your shipping options into types.",
+    "create": {
+      "header": "Create Shipping Option Type",
+      "hint": "Create a new shipping option type to categorize your shipping options.",
+      "successToast": "Shipping option type {{label}} was successfully created."
+    },
+    "edit": {
+      "header": "Edit Shipping Option Type",
+      "successToast": "Shipping option type {{label}} was successfully updated."
+    },
+    "delete": {
+      "confirmation": "You are about to delete the shipping option type \"{{label}}\". This action cannot be undone.",
+      "successToast": "Shipping option type \"{{label}}\" was successfully deleted."
+    },
+    "fields": {
+      "label": "Label",
+      "code": "Code",
+      "description": "Description"
+    }
+  },
   "productTypes": {
     "domain": "Product Types",
     "subtitle": "Organize your products into types.",
@@ -2741,8 +2855,8 @@
       "successToast": "Product type {{value}} was successfully updated."
     },
     "delete": {
-      "confirmation": "You are about to delete the product type {{value}}. This action cannot be undone.",
-      "successToast": "Product type {{value}} was successfully deleted."
+      "confirmation": "You are about to delete the product type \"{{value}}\". This action cannot be undone.",
+      "successToast": "Product type \"{{value}}\" was successfully deleted."
     },
     "fields": {
       "value": "Value"
@@ -2775,7 +2889,7 @@
       "description": "You don't have any notifications at the moment, but once you do they will live here."
     },
     "accessibility": {
-      "description": "notifications about Medusa activities will be listed here."
+      "description": "Notifications about Medusa activities will be listed here."
     }
   },
   "errors": {
@@ -2801,10 +2915,14 @@
     "from": "From",
     "to": "To",
     "beaware": "Be aware",
-    "loading": "Loading"
+    "loading": "Loading",
+    "selectValue": "Select Value",
+    "selectValues": "Select Values"
   },
   "fields": {
     "amount": "Amount",
+    "reference": "Reference",
+    "reference_id": "Reference ID",
     "refundAmount": "Refund amount",
     "name": "Name",
     "default": "Default",
@@ -2827,6 +2945,8 @@
     "categories": "Categories",
     "shippingMethod": "Shipping method",
     "configurations": "Configurations",
+    "enabledInStore": "Enabled in store",
+    "isReturn": "Is return",
     "conditions": "Conditions",
     "category": "Category",
     "collection": "Collection",
@@ -2862,6 +2982,7 @@
     "minutes": "Minutes",
     "totalRedemptions": "Total Redemptions",
     "countries": "Countries",
+    "serviceZone": "Service Zone",
     "paymentProviders": "Payment Providers",
     "refundReason": "Refund Reason",
     "fulfillmentProviders": "Fulfillment Providers",
@@ -2890,7 +3011,8 @@
     "orders": "Orders",
     "account": "Account",
     "total": "Order Total",
-    "paidTotal": "Total captured",
+    "paidTotal": "Paid Total",
+    "creditTotal": "Credit Lines Total",
     "totalExclTax": "Total excl. tax",
     "subtotal": "Subtotal",
     "shipping": "Shipping",

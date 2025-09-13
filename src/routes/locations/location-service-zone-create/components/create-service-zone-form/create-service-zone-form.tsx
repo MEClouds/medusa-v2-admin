@@ -1,12 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { HttpTypes } from "@medusajs/types"
-import { Button, Heading, Input, toast } from "@medusajs/ui"
+import { Button, Heading, InlineTip, Input, toast } from "@medusajs/ui"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { z } from "zod"
 
 import { Form } from "../../../../../components/common/form"
-import { InlineTip } from "../../../../../components/common/inline-tip"
 import {
   RouteFocusModal,
   StackedFocusModal,
@@ -118,7 +117,7 @@ export function CreateServiceZoneForm({
                   />
                 </div>
 
-                <InlineTip>
+                <InlineTip label={t("general.tip")}>
                   {t("stockLocations.serviceZones.fields.tip")}
                 </InlineTip>
 

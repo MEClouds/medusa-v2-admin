@@ -1,35 +1,33 @@
 import { Tooltip } from "@medusajs/ui"
-import { format } from "date-fns/format"
 import { useTranslation } from "react-i18next"
 import { PlaceholderCell } from "../placeholder-cell"
+import { useDate } from "../../../../../hooks/use-date"
 
 type DateCellProps = {
   date?: Date | string | null
 }
 
 export const DateCell = ({ date }: DateCellProps) => {
+  const { getFullDate } = useDate()
+
   if (!date) {
     return <PlaceholderCell />
   }
-
-  const value = new Date(date)
-  value.setMinutes(value.getMinutes() - value.getTimezoneOffset())
-
-  const hour12 = Intl.DateTimeFormat().resolvedOptions().hour12
-  const timestampFormat = hour12 ? "dd MMM yyyy hh:MM a" : "dd MMM yyyy HH:MM"
 
   return (
     <div className="flex h-full w-full items-center overflow-hidden">
       <Tooltip
         className="z-10"
         content={
-          <span className="text-pretty">{`${format(
-            value,
-            timestampFormat
-          )}`}</span>
+          <span className="text-pretty">{`${getFullDate({
+            date,
+            includeTime: true,
+          })}`}</span>
         }
       >
-        <span className="truncate">{format(value, "dd MMM yyyy")}</span>
+        <span className="truncate">
+          {getFullDate({ date, includeTime: false })}
+        </span>
       </Tooltip>
     </div>
   )

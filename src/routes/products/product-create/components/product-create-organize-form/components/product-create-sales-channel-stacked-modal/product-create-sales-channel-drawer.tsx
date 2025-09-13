@@ -23,7 +23,7 @@ type ProductCreateSalesChannelStackedModalProps = {
   form: UseFormReturn<ProductCreateSchemaType>
 }
 
-const PAGE_SIZE = 50
+const PAGE_SIZE = 20
 
 export const ProductCreateSalesChannelStackedModal = ({
   form,

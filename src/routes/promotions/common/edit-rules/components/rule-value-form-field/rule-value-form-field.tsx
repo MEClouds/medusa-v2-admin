@@ -1,10 +1,18 @@
-import { RuleAttributeOptionsResponse, StoreDTO } from "@medusajs/types"
-import { Input, Select } from "@medusajs/ui"
+import {
+  ApplicationMethodTargetTypeValues,
+  HttpTypes,
+  RuleTypeValues,
+} from "@medusajs/types"
+import { Input } from "@medusajs/ui"
 import { useWatch } from "react-hook-form"
+import { useTranslation } from "react-i18next"
+import { useEffect } from "react"
+
 import { Form } from "../../../../../../components/common/form"
 import { Combobox } from "../../../../../../components/inputs/combobox"
-import { usePromotionRuleValues } from "../../../../../../hooks/api/promotions"
-import { useStore } from "../../../../../../hooks/api/store"
+import { useStore } from "../../../../../../hooks/api"
+import { useComboboxData } from "../../../../../../hooks/use-combobox-data"
+import { sdk } from "../../../../../../lib/client"
 
 type RuleValueFormFieldType = {
   form: any
@@ -16,11 +24,12 @@ type RuleValueFormFieldType = {
   name: string
   operator: string
   fieldRule: any
-  attributes: RuleAttributeOptionsResponse[]
-  ruleType: "rules" | "target-rules" | "buy-rules"
+  attributes: HttpTypes.AdminRuleAttributeOption[]
+  ruleType: RuleTypeValues
+  applicationMethodTargetType: ApplicationMethodTargetTypeValues | undefined
 }
 
-const buildFilters = (attribute?: string, store?: StoreDTO) => {
+const buildFilters = (attribute?: string, store?: HttpTypes.AdminStore) => {
   if (!attribute || !store) {
     return {}
   }
@@ -43,28 +52,57 @@ export const RuleValueFormField = ({
   fieldRule,
   attributes,
   ruleType,
+  applicationMethodTargetType,
 }: RuleValueFormFieldType) => {
+  const { t } = useTranslation()
+
   const attribute = attributes?.find(
     (attr) => attr.value === fieldRule.attribute
   )
 
   const { store, isLoading: isStoreLoading } = useStore()
-  const { values: options = [] } = usePromotionRuleValues(
-    ruleType,
-    attribute?.id!,
-    buildFilters(attribute?.id, store),
-    {
-      enabled:
-        !!attribute?.id &&
-        ["select", "multiselect"].includes(attribute.field_type) &&
-        !isStoreLoading,
-    }
-  )
+
+  const comboboxData = useComboboxData({
+    queryFn: async (params) => {
+      return await sdk.admin.promotion.listRuleValues(
+        ruleType,
+        attribute?.id!,
+        {
+          ...params,
+          ...buildFilters(attribute?.id, store!),
+          application_method_target_type: applicationMethodTargetType,
+        }
+      )
+    },
+    enabled:
+      !!attribute?.id &&
+      ["select", "multiselect"].includes(attribute.field_type) &&
+      !isStoreLoading,
+    getOptions: (data) => data.values,
+    queryKey: ["rule-value-options", ruleType, attribute?.id],
+  })
 
   const watchOperator = useWatch({
     control: form.control,
     name: operator,
   })
+
+  useEffect(() => {
+    const hasDirtyRules = Object.keys(form.formState.dirtyFields).length > 0
+
+    /**
+     * Don't reset values if fileds didn't change - this is to prevent reset of form on initial render when editing an existing rule
+     */
+    if (!hasDirtyRules) {
+      return
+    }
+
+    if (watchOperator === "eq") {
+      form.setValue(name, "")
+    } else {
+      form.setValue(name, [])
+    }
+  }, [watchOperator])
 
   return (
     <Form.Field
@@ -103,54 +141,23 @@ export const RuleValueFormField = ({
               <Form.ErrorMessage />
             </Form.Item>
           )
-        } else if (watchOperator === "eq") {
-          return (
-            <Form.Item className="basis-1/2">
-              <Form.Control>
-                <Select
-                  {...field}
-                  value={
-                    Array.isArray(field.value) ? field.value[0] : field.value
-                  }
-                  onValueChange={onChange}
-                  disabled={!fieldRule.attribute}
-                >
-                  <Select.Trigger ref={ref} className="bg-ui-bg-base">
-                    <Select.Value placeholder="Select Value" />
-                  </Select.Trigger>
-
-                  <Select.Content>
-                    {options?.map((option, i) => (
-                      <Select.Item
-                        key={`${identifier}-value-option-${i}`}
-                        value={option.value}
-                      >
-                        <span className="text-ui-fg-subtle">
-                          {option.label}
-                        </span>
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select>
-              </Form.Control>
-              <Form.ErrorMessage />
-            </Form.Item>
-          )
         } else {
           return (
             <Form.Item className="basis-1/2">
               <Form.Control>
                 <Combobox
                   {...field}
+                  {...comboboxData}
                   ref={ref}
-                  placeholder="Select Values"
-                  options={options}
+                  placeholder={
+                    watchOperator === "eq"
+                      ? t("labels.selectValue")
+                      : t("labels.selectValues")
+                  }
+                  disabled={!watchOperator}
                   onChange={onChange}
-                  className="bg-ui-bg-base"
-                  disabled={!fieldRule.attribute}
                 />
               </Form.Control>
-
               <Form.ErrorMessage />
             </Form.Item>
           )

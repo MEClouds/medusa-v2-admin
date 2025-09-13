@@ -39,6 +39,7 @@ export const InventoryItemAttributeSection = ({
       <SectionRow title={t("fields.length")} value={inventoryItem.length} />
       <SectionRow title={t("fields.weight")} value={inventoryItem.weight} />
       <SectionRow title={t("fields.midCode")} value={inventoryItem.mid_code} />
+      <SectionRow title={t("fields.material")} value={inventoryItem.material} />
       <SectionRow title={t("fields.hsCode")} value={inventoryItem.hs_code} />
       <SectionRow
         title={t("fields.countryOfOrigin")}

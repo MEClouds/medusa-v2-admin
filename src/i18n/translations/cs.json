@@ -43,6 +43,7 @@
       "plusCount": "+ {{count}}",
       "plusCountMore": "+ {{count}} více",
       "areYouSure": "Jste si jistý?",
+      "areYouSureDescription": "Chystáte se smazat {{entity}} {{title}}. Tuto akci nelze vrátit zpět.",
       "noRecordsFound": "Žádné záznamy nenalezeny",
       "typeToConfirm": "Prosím napište {val} pro potvrzení:",
       "noResultsTitle": "Žádné výsledky",
@@ -349,6 +350,7 @@
       "backToDashboard": "Zpět na dashboard"
     },
     "addresses": {
+      "title": "Adresy",
       "shippingAddress": {
         "header": "Doručovací adresa",
         "editHeader": "Upravit doručovací adresu",
@@ -537,22 +539,30 @@
       "fields": {
         "title": {
           "label": "Název",
-          "hint": "Dejte svému produktu krátký a jasný název.<0/>50-60 znaků je doporučená délka pro vyhledávače."
+          "hint": "Dejte svému produktu krátký a jasný název.<0/>50-60 znaků je doporučená délka pro vyhledávače.",
+        "placeholder": "Zimní bunda"
         },
         "subtitle": {
-          "label": "Podtitul"
+          "label": "Podtitul",
+        "placeholder": "Teplé a útulné"
         },
         "handle": {
           "label": "Handle",
-          "tooltip": "Handle se používá k odkazování na produkt ve vašem obchodě. Pokud není specifikováno, handle bude vygenerováno z názvu produktu."
+          "tooltip": "Handle se používá k odkazování na produkt ve vašem obchodě. Pokud není specifikováno, handle bude vygenerováno z názvu produktu.",
+        "placeholder": "zimní-bunda"
         },
         "description": {
           "label": "Popis",
-          "hint": "Dejte svému produktu krátký a jasný popis.<0/>120-160 znaků je doporučená délka pro vyhledávače."
+          "hint": "Dejte svému produktu krátký a jasný popis.<0/>120-160 znaků je doporučená délka pro vyhledávače.",
+        "placeholder": "Teplá a útulná bunda"
         },
         "discountable": {
           "label": "Slevový",
           "hint": "Když není zaškrtnuto, slevy nebudou na tento produkt aplikovány"
+        },
+        "shipping_profile": {
+          "label": "Profil dopravy",
+          "hint": "Připojte produkt k profilu dopravy"
         },
         "type": {
           "label": "Typ"
@@ -681,6 +691,20 @@
           "alreadyManagedWithSku": "Tato inventární položka je již upravitelná pod {{title}} ({{sku}})."
         }
       },
+      "shippingProfile": {
+        "header": "Konfigurace dopravy",
+        "edit": {
+          "header": "Konfigurace dopravy",
+          "toasts": {
+            "success": "Profil dopravy pro {{title}} byl úspěšně aktualizován."
+          }
+        },
+        "create": {
+          "errors": {
+            "required": "Profil dopravy je povinný"
+          }
+        }
+      },
       "toasts": {
         "delete": {
           "success": {
@@ -791,8 +815,10 @@
       "locationLevels": "Lokace",
       "associatedVariants": "Přidružené varianty",
       "manageLocations": "Spravovat lokace",
+      "manageLocationQuantity": "Spravovat množství na lokaci",
       "deleteWarning": "Chystáte se smazat inventární položku. Tuto akci nelze vrátit zpět.",
       "editItemDetails": "Upravit detaily položky",
+      "quantityAcrossLocations": "{{quantity}} na {{locations}} lokacích",
       "create": {
         "title": "Vytvořit inventární položku",
         "details": "Detaily",
@@ -913,7 +939,28 @@
       },
       "registered": "Registrovaný",
       "guest": "Host",
-      "hasAccount": "Má účet"
+      "hasAccount": "Má účet",
+      "addresses": {
+        "title": "Adresy",
+        "fields": {
+          "addressName": "Název adresy",
+          "address1": "Adresa 1",
+          "address2": "Adresa 2",
+          "city": "Město",
+          "province": "Provincie",
+          "postalCode": "PSČ",
+          "country": "Země",
+          "phone": "Telefon",
+          "company": "Společnost",
+          "countryCode": "Kód země",
+          "provinceCode": "Kód provincie"
+        },
+        "create": {
+          "header": "Nová adresa",
+          "hint": "Vytvořte novou adresu pro zákazníka.",
+          "successToast": "Adresa byla úspěšně vytvořena."
+        }
+      }
     },
     "customerGroups": {
       "domain": "Skupiny zákazníků",
@@ -963,6 +1010,31 @@
       }
     },
     "orders": {
+      "giftCardsStoreCreditLines": "Dárkové karty a kredity",
+      "creditLines": {
+        "title": "Kredity",
+        "total": "Součet všech kreditů",
+        "creditOrDebit": "Kredit / Debet",
+        "createCreditLine": "Vytvořit kredit",
+        "createCreditLineSuccess": "Kredit byl úspěšně vytvořen",
+        "createCreditLineError": "Chyba při vytváření kreditu",
+        "createCreditLineDescription": "Vytvořte kredit na částku {{amount}}",
+        "operation": "Operace",
+        "credit": "Kredit",
+        "creditDescription": "Přidá kladnou částku k objednávce",
+        "debit": "Debet",
+        "debitDescription": "Odečte zápornou částku z objednávky"
+      },
+      "balanceSettlement": {
+        "title": "Vyrovnání zůstatku",
+        "settlementType": "Typ vyrovnání",
+        "settlementTypes": {
+          "paymentMethod": "Platební metoda",
+          "paymentMethodDescription": "Vrátit částku na platební metodu",
+          "creditLine": "Kredit v obchodě",
+          "creditLineDescription": "Vrátit částku jako kredit v obchodě"
+        }
+      },
       "domain": "Objednávky",
       "claim": "Reklamace",
       "exchange": "Výměna",
@@ -1009,6 +1081,7 @@
         "title": "Platby",
         "isReadyToBeCaptured": "Platba <0/> je připravena k zachycení.",
         "totalPaidByCustomer": "Celková částka zaplacená zákazníkem",
+        "totalStoreCreditRefunds": "Celkový kredit vrácen v obchodě",
         "capture": "Zachytit platbu",
         "capture_short": "Zachytit",
         "refund": "Vrácení peněz",
@@ -1092,7 +1165,7 @@
         "sendNotificationHint": "Oznámit zákazníkovi o vrácení.",
         "returnTotal": "Celková částka vrácení",
         "inboundTotal": "Celková částka příchozí",
-        "refundAmount": "Částka k vrácení",
+        "estDifference": "Odhadovaný rozdíl",
         "outstandingAmount": "Nesplacená částka",
         "reason": "Důvod",
         "reasonHint": "Vyberte, proč chce zákazník vrátit položky.",
@@ -1249,6 +1322,8 @@
       "fulfillment": {
         "cancelWarning": "Chystáte se zrušit plnění. Tuto akci nelze vrátit zpět.",
         "markAsDeliveredWarning": "Chystáte se označit plnění jako doručené. Tuto akci nelze vrátit zpět.",
+        "differentOptionSelected": "Vybraná doprava se liší od té, kterou vybral zákazník.",
+        "disabledItemTooltip": "Vybraná doprava neumožňuje vyřízení této položky",
         "unfulfilledItems": "Nesplněné položky",
         "statusLabel": "Stav plnění",
         "statusTitle": "Stav plnění",
@@ -1261,6 +1336,7 @@
         "available": "Dostupné",
         "inStock": "Na skladě",
         "markAsShipped": "Označit jako odeslané",
+        "markAsPickedUp": "Označit jako vyzvednuté",
         "markAsDelivered": "Označit jako doručené",
         "itemsToFulfillDesc": "Vyberte položky a množství k plnění",
         "locationDescription": "Vyberte, z které lokace chcete plnit položky.",
@@ -1269,7 +1345,9 @@
         "error": {
           "wrongQuantity": "K dispozici je pouze jedna položka k plnění",
           "wrongQuantity_other": "Množství by mělo být číslo mezi 1 a {{number}}",
-          "noItems": "Žádné položky k plnění."
+          "noItems": "Žádné položky k plnění.",
+          "noShippingOption": "Je vyžadována doprava",
+          "noLocation": "Je vyžadována lokace"
         },
         "status": {
           "notFulfilled": "Nesplněno",
@@ -1288,7 +1366,8 @@
           "created": "Plnění bylo úspěšně vytvořeno",
           "canceled": "Plnění bylo úspěšně zrušeno",
           "fulfillmentShipped": "Nelze zrušit již odeslané plnění",
-          "fulfillmentDelivered": "Plnění bylo úspěšně označeno jako doručené"
+          "fulfillmentDelivered": "Plnění bylo úspěšně označeno jako doručené",
+          "fulfillmentPickedUp": "Plnění bylo úspěšně označeno jako vyzvednuté"
         },
         "trackingLabel": "Sledování",
         "shippingFromLabel": "Doprava z",
@@ -1491,11 +1570,17 @@
       },
       "salesChannels": {
         "header": "Prodejní kanály",
+        "hint": "Správa prodejních kanálů připojených k této lokaci",
         "label": "Připojené prodejní kanály",
         "connectedTo": "Připojeno k {{count}} z {{total}} prodejních kanálů",
         "noChannels": "Lokace není připojena k žádným prodejním kanálům.",
         "action": "Připojit prodejní kanály",
         "successToast": "Prodejní kanály byly úspěšně aktualizovány."
+      },
+      "pickupOptions": {
+        "edit": {
+          "header": "Upravit možnost vyzvednutí"
+        }
       },
       "shippingOptions": {
         "create": {
@@ -1504,6 +1589,12 @@
             "hint": "Vytvořte novou možnost dopravy pro definování způsobu dopravy produktů z této lokace.",
             "label": "Možnosti dopravy",
             "successToast": "Možnost dopravy {{name}} byla úspěšně vytvořena."
+          },
+          "pickup": {
+            "header": "Vytvořit možnost vyzvednutí pro {{zone}}",
+            "hint": "Vytvořte novou možnost vyzvednutí, která určí, jak jsou produkty vyzvedávány z této lokace.",
+            "label": "Možnosti vyzvednutí",
+            "successToast": "Možnost vyzvednutí {{name}} byla úspěšně vytvořena."
           },
           "returns": {
             "header": "Vytvořit možnost vrácení pro {{zone}}",
@@ -1568,6 +1659,8 @@
           "count": {
             "shipping_one": "{{count}} možnost dopravy",
             "shipping_other": "{{count}} možnosti dopravy",
+            "pickup_one": "{{count}} možnost vyzvednutí",
+            "pickup_other": "{{count}} možností vyzvednutí",
             "returns_one": "{{count}} možnost vrácení",
             "returns_other": "{{count}} možnosti vrácení"
           },
@@ -1651,10 +1744,15 @@
         "header": "Vytvořit daňový region",
         "hint": "Vytvořte nový daňový region pro definování daňových sazeb pro konkrétní zemi.",
         "errors": {
-          "rateIsRequired": "Daňová sazba je povinná při vytváření výchozí daňové sazby.",
-          "nameIsRequired": "Název je povinný při vytváření výchozí daňové sazby."
+          "missingProvider": "Poskytovatel je povinný při vytváření daňového regionu.",
+          "missingCountry": "Země je povinná při vytváření daňového regionu."
         },
         "successToast": "Daňový region byl úspěšně vytvořen."
+      },
+      "edit": {
+        "header": "Upravit daňový region",
+        "hint": "Změna údajů daňového regionu.",
+        "successToast": "Daňový region byl úspěšně aktualizován."
       },
       "province": {
         "header": "Provincie",
@@ -1662,6 +1760,9 @@
           "header": "Vytvořit daňový region provincie",
           "hint": "Vytvořte nový daňový region pro definování daňových sazeb pro konkrétní provincii."
         }
+      },
+      "provider": {
+        "header": "Daňový poskytovatel"
       },
       "state": {
         "header": "Státy",
@@ -1788,6 +1889,7 @@
         },
         "taxRate": "Daňová sazba",
         "taxCode": "Daňový kód",
+        "taxProvider": "Daňový poskytovatel",
         "targets": {
           "label": "Cíle",
           "hint": "Vyberte cíle, na které se tato daňová sazba bude vztahovat.",
@@ -1893,6 +1995,7 @@
         "allocation": "Přidělení",
         "addCondition": "Přidat podmínku",
         "clearAll": "Vymazat vše",
+        "taxInclusive": "Včetně daně",
         "amount": {
           "tooltip": "Vyberte kód měny pro povolení nastavení částky"
         },
@@ -1968,6 +2071,10 @@
             "title": "Bez kampaně",
             "description": "Pokračovat bez přiřazení propagace ke kampani"
           }
+        },
+        "taxInclusive": {
+          "title": "Zahrnuje propagace daně?",
+          "description": "Povolte toto pole pro aplikaci propagace po zdanění. Pokud je zakázáno, propagace se aplikuje před zdaněním."
         },
         "status": {
           "label": "Stav",
@@ -2299,6 +2406,8 @@
       "editStore": "Upravit obchod",
       "defaultCurrency": "Výchozí měna",
       "defaultRegion": "Výchozí region",
+      "defaultSalesChannel": "Výchozí prodejní kanál",
+      "defaultLocation": "Výchozí lokace",
       "swapLinkTemplate": "Šablona odkazu na výměnu",
       "paymentLinkTemplate": "Šablona odkazu na platbu",
       "inviteLinkTemplate": "Šablona odkazu na pozvánku",
@@ -2402,7 +2511,6 @@
         "createTaxRate": "Vytvořit daňovou sazbu",
         "createTaxRateHint": "Vytvořte novou daňovou sazbu pro region.",
         "deleteRateDescription": "Chystáte se smazat daňovou sazbu {{name}}. Tuto akci nelze vrátit zpět.",
-        "editTaxRate": "Upravit daňovou sazbu",
         "editRateAction": "Upravit sazbu",
         "editOverridesAction": "Upravit přepsání",
         "editOverridesTitle": "Upravit přepsání daňové sazby",
@@ -2445,7 +2553,16 @@
     "salesChannels": {
       "domain": "Prodejní kanály",
       "subtitle": "Spravujte online a offline kanály, na kterých prodáváte produkty.",
-      "createSalesChannel": "Vytvořit prodejní kanál",
+      "list": {
+        "empty": {
+          "heading": "Nebyly nalezeny žádné prodejní kanály",
+          "description": "Jakmile bude vytvořen prodejní kanál, zobrazí se zde."
+        },
+        "filtered": {
+          "heading": "Žádné výsledky",
+          "description": "Žádné prodejní kanály neodpovídají aktuálním filtrům."
+        }
+      },"createSalesChannel": "Vytvořit prodejní kanál",
       "createSalesChannelHint": "Vytvořte nový prodejní kanál pro prodej vašich produktů.",
       "enabledHint": "Určete, zda je prodejní kanál povolen.",
       "removeProductsWarning_one": "Chystáte se odstranit {{count}} produkt z {{sales_channel}}.",
@@ -2749,10 +2866,14 @@
       "added": "Přidáno",
       "removed": "Odstraněno",
       "from": "Od",
-      "to": "Do"
+      "to": "Do",
+      "beaware": "Buďte opatrní",
+      "loading": "Načítání"
     },
     "fields": {
       "amount": "Částka",
+      "reference": "Reference",
+      "reference_id": "ID reference",
       "refundAmount": "Částka k vrácení",
       "name": "Název",
       "default": "Výchozí",
@@ -2838,7 +2959,8 @@
       "orders": "Objednávky",
       "account": "Účet",
       "total": "Celková částka objednávky",
-      "paidTotal": "Celková částka zachycena",
+      "paidTotal": "Celková zaplacená částka",
+      "creditTotal": "Celková částka kreditu",
       "totalExclTax": "Celková částka bez daně",
       "subtotal": "Mezisoučet",
       "shipping": "Doprava",

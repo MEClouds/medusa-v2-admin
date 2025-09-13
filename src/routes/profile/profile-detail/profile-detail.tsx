@@ -3,11 +3,11 @@ import { ProfileGeneralSection } from "./components/profile-general-section"
 
 import { SingleColumnPageSkeleton } from "../../../components/common/skeleton"
 import { SingleColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 
 export const ProfileDetail = () => {
   const { user, isPending: isLoading, isError, error } = useMe()
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   if (isLoading || !user) {
     return <SingleColumnPageSkeleton sections={1} />

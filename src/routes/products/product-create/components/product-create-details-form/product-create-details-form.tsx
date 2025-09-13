@@ -2,10 +2,8 @@ import { Divider, Heading } from "@medusajs/ui"
 import { UseFormReturn } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
-import {
-  FormExtensionZone,
-  useDashboardExtension,
-} from "../../../../../extensions"
+import { FormExtensionZone } from "../../../../../dashboard-app"
+import { useExtension } from "../../../../../providers/extension-provider"
 import { ProductCreateSchemaType } from "../../types"
 import { ProductCreateGeneralSection } from "./components/product-create-details-general-section"
 import { ProductCreateMediaSection } from "./components/product-create-details-media-section"
@@ -16,7 +14,7 @@ type ProductAttributesProps = {
 }
 
 export const ProductCreateDetailsForm = ({ form }: ProductAttributesProps) => {
-  const { getFormFields } = useDashboardExtension()
+  const { getFormFields } = useExtension()
   const fields = getFormFields("product", "create", "general")
 
   return (

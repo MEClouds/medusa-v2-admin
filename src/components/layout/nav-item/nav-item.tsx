@@ -130,7 +130,7 @@ export const NavItem = ({
       <NavItemTooltip to={to}>
         <NavLink
           to={to}
-          end
+          end={items?.some((i) => i.to === pathname)}
           state={
             from
               ? {

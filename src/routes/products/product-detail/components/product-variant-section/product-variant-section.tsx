@@ -16,7 +16,7 @@ import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { CellContext } from "@tanstack/react-table"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { DataTable } from "../../../../../components/data-table"
 import { useDataTableDateColumns } from "../../../../../components/data-table/helpers/general/use-data-table-date-columns"
 import { useDataTableDateFilters } from "../../../../../components/data-table/helpers/general/use-data-table-date-filters"
@@ -32,6 +32,7 @@ type ProductVariantSectionProps = {
 }
 
 const PAGE_SIZE = 10
+const PREFIX = "pv"
 
 export const ProductVariantSection = ({
   product,
@@ -46,15 +47,18 @@ export const ProductVariantSection = ({
     manage_inventory,
     created_at,
     updated_at,
-  } = useQueryParams([
-    "q",
-    "order",
-    "offset",
-    "manage_inventory",
-    "allow_backorder",
-    "created_at",
-    "updated_at",
-  ])
+  } = useQueryParams(
+    [
+      "q",
+      "order",
+      "offset",
+      "manage_inventory",
+      "allow_backorder",
+      "created_at",
+      "updated_at",
+    ],
+    PREFIX
+  )
 
   const columns = useColumns(product)
   const filters = useFilters()
@@ -75,7 +79,8 @@ export const ProductVariantSection = ({
         : undefined,
       created_at: created_at ? JSON.parse(created_at) : undefined,
       updated_at: updated_at ? JSON.parse(updated_at) : undefined,
-      fields: "*inventory_items.inventory.location_levels,+inventory_quantity",
+      fields:
+        "title,sku,*options,created_at,updated_at,*inventory_items.inventory.location_levels,inventory_quantity,manage_inventory",
     },
     {
       placeholderData: keepPreviousData,
@@ -131,6 +136,7 @@ export const ProductVariantSection = ({
           ],
         }}
         commands={commands}
+        prefix={PREFIX}
       />
     </Container>
   )
@@ -144,6 +150,17 @@ const useColumns = (product: HttpTypes.AdminProduct) => {
   const navigate = useNavigate()
   const { mutateAsync } = useDeleteVariantLazy(product.id)
   const prompt = usePrompt()
+  const [searchParams] = useSearchParams()
+
+  const tableSearchParams = useMemo(() => {
+    const filtered = new URLSearchParams()
+    for (const [key, value] of searchParams.entries()) {
+      if (key.startsWith(`${PREFIX}_`)) {
+        filtered.append(key, value)
+      }
+    }
+    return filtered
+  }, [searchParams])
 
   const dateColumns = useDataTableDateColumns<HttpTypes.AdminProductVariant>()
 
@@ -214,7 +231,16 @@ const useColumns = (product: HttpTypes.AdminProduct) => {
           icon: <PencilSquare />,
           label: t("actions.edit"),
           onClick: (row) => {
-            navigate(`edit-variant?variant_id=${row.row.original.id}`)
+            navigate(
+              `edit-variant?variant_id=${
+                row.row.original.id
+              }&${tableSearchParams.toString()}`,
+              {
+                state: {
+                  restore_params: tableSearchParams.toString(),
+                },
+              }
+            )
           },
         },
       ]
@@ -270,7 +296,7 @@ const useColumns = (product: HttpTypes.AdminProduct) => {
 
       return [mainActions, secondaryActions]
     },
-    [handleDelete, navigate, t]
+    [handleDelete, navigate, t, tableSearchParams]
   )
 
   const getInventory = useCallback(
@@ -278,6 +304,15 @@ const useColumns = (product: HttpTypes.AdminProduct) => {
       const castVariant = variant as HttpTypes.AdminProductVariant & {
         inventory_items: { inventory: HttpTypes.AdminInventoryItem }[]
       }
+
+      if (!variant.manage_inventory) {
+        return {
+          text: t("products.variant.inventory.notManaged"),
+          hasInventoryKit: false,
+          notManaged: true,
+        }
+      }
+
       const quantity = variant.inventory_quantity
 
       const inventoryItems = castVariant.inventory_items
@@ -306,7 +341,7 @@ const useColumns = (product: HttpTypes.AdminProduct) => {
             count: locationCount,
           })
 
-      return { text, hasInventoryKit, quantity }
+      return { text, hasInventoryKit, quantity, notManaged: false }
     },
     [t]
   )
@@ -330,7 +365,9 @@ const useColumns = (product: HttpTypes.AdminProduct) => {
         id: "inventory",
         header: t("fields.inventory"),
         cell: ({ row }) => {
-          const { text, hasInventoryKit, quantity } = getInventory(row.original)
+          const { text, hasInventoryKit, quantity, notManaged } = getInventory(
+            row.original
+          )
 
           return (
             <Tooltip content={text}>
@@ -338,7 +375,7 @@ const useColumns = (product: HttpTypes.AdminProduct) => {
                 {hasInventoryKit && <Component />}
                 <span
                   className={clx("truncate", {
-                    "text-ui-fg-error": !quantity,
+                    "text-ui-fg-error": !quantity && !notManaged,
                   })}
                 >
                   {text}

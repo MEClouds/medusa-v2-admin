@@ -526,18 +526,22 @@
     "fields": {
       "title": {
         "label": "Titre",
-        "hint": "Donnez à votre produit un titre court et clair.<0/>50-60 caractères est la longueur recommandée pour les moteurs de recherche."
+        "hint": "Donnez à votre produit un titre court et clair.<0/>50-60 caractères est la longueur recommandée pour les moteurs de recherche.",
+        "placeholder": "Veste d'hiver"
       },
       "subtitle": {
-        "label": "Sous-titre"
+        "label": "Sous-titre",
+        "placeholder": "Chaud et confortable"
       },
       "handle": {
         "label": "Handle",
-        "tooltip": "Le handle est utilisé pour faire référence au produit dans votre boutique. Si non spécifié, le handle sera généré à partir du titre du produit."
+        "tooltip": "Le handle est utilisé pour faire référence au produit dans votre boutique. Si non spécifié, le handle sera généré à partir du titre du produit.",
+        "placeholder": "veste-dhiver"
       },
       "description": {
         "label": "Description",
-        "hint": "Donnez à votre produit une description courte et claire.<0/>120-160 caractères est la longueur recommandée pour les moteurs de recherche."
+        "hint": "Donnez à votre produit une description courte et claire.<0/>120-160 caractères est la longueur recommandée pour les moteurs de recherche.",
+        "placeholder": "Une veste chaude et confortable"
       },
       "discountable": {
         "label": "Discountable",

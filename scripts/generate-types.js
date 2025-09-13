@@ -11,12 +11,12 @@ async function generateTypes() {
   const filePath = path.join(distDir, "index.d.ts")
 
   const fileContent = `
-import * as react_jsx_runtime from "react/jsx-runtime"
+    declare function App(props: {
+      plugins?: any[]
+    }): JSX.Element
 
-declare const App: () => react_jsx_runtime.JSX.Element
-
-export default App
-`
+    export default App
+  `
 
   // Ensure the dist directory exists
   if (!fs.existsSync(distDir)) {

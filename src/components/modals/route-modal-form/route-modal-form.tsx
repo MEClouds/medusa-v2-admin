@@ -35,22 +35,22 @@ export const RouteModalForm = <TFieldValues extends FieldValues = any>({
     const isSearchChanged = currentLocation.search !== nextLocation.search
 
     if (blockSearch) {
-      const ret = isDirty && (isPathChanged || isSearchChanged)
+      const shouldBlock = isDirty && (isPathChanged || isSearchChanged)
 
-      if (!ret) {
+      if (isPathChanged) {
         onClose?.(isSubmitSuccessful)
       }
 
-      return ret
+      return shouldBlock
     }
 
-    const ret = isDirty && isPathChanged
+    const shouldBlock = isDirty && isPathChanged
 
-    if (!ret) {
+    if (isPathChanged) {
       onClose?.(isSubmitSuccessful)
     }
 
-    return ret
+    return shouldBlock
   })
 
   const handleCancel = () => {

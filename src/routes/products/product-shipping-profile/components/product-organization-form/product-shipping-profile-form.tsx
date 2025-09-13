@@ -7,12 +7,13 @@ import { Form } from "../../../../../components/common/form"
 import { Combobox } from "../../../../../components/inputs/combobox"
 import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useExtendableForm } from "../../../../../extensions"
 import { useUpdateProduct } from "../../../../../hooks/api/products"
 import { useComboboxData } from "../../../../../hooks/use-combobox-data"
 import { sdk } from "../../../../../lib/client"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { se } from "date-fns/locale"
+import { useEffect } from "react"
 
 type ProductShippingProfileFormProps = {
   product: HttpTypes.AdminProduct & {
@@ -47,12 +48,15 @@ export const ProductShippingProfileForm = ({
     resolver: zodResolver(ProductShippingProfileSchema),
   })
 
+  const selectedShippingProfile = form.watch("shipping_profile_id")
+
   const { mutateAsync, isPending } = useUpdateProduct(product.id)
 
   const handleSubmit = form.handleSubmit(async (data) => {
     await mutateAsync(
       {
-        shipping_profile_id: data.shipping_profile_id,
+        shipping_profile_id:
+          data.shipping_profile_id === "" ? null : data.shipping_profile_id,
       },
       {
         onSuccess: ({ product }) => {
@@ -69,6 +73,12 @@ export const ProductShippingProfileForm = ({
       }
     )
   })
+
+  useEffect(() => {
+    if (typeof selectedShippingProfile === "undefined") {
+      form.setValue("shipping_profile_id", "")
+    }
+  }, [selectedShippingProfile])
 
   return (
     <RouteDrawer.Form form={form}>
@@ -87,6 +97,7 @@ export const ProductShippingProfileForm = ({
                     <Form.Control>
                       <Combobox
                         {...field}
+                        allowClear
                         options={shippingProfiles.options}
                         searchValue={shippingProfiles.searchValue}
                         onSearchValueChange={

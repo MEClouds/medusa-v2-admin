@@ -3,7 +3,6 @@ import { RouteDrawer, useRouteModal } from "../../../components/modals"
 import { useTranslation } from "react-i18next"
 import { ExportFilters } from "./components/export-filters"
 import { useExportProducts } from "../../../hooks/api"
-import { useProductTableQuery } from "../../../hooks/table/query"
 
 export const ProductExport = () => {
   const { t } = useTranslation()
@@ -25,8 +24,7 @@ export const ProductExport = () => {
 
 const ProductExportContent = () => {
   const { t } = useTranslation()
-  const { searchParams } = useProductTableQuery({})
-  const { mutateAsync } = useExportProducts(searchParams)
+  const { mutateAsync } = useExportProducts()
   const { handleSuccess } = useRouteModal()
 
   const handleExportRequest = async () => {

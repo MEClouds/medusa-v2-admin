@@ -1,5 +1,6 @@
 import { ExclamationCircle, MagnifyingGlass, PlusMini } from "@medusajs/icons"
 import { Button, Text, clx } from "@medusajs/ui"
+import React from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 
@@ -44,6 +45,7 @@ type NoRecordsProps = {
   message?: string
   className?: string
   buttonVariant?: string
+  icon?: React.ReactNode
 } & ActionProps
 
 const DefaultButton = ({ action }: ActionProps) =>
@@ -70,18 +72,19 @@ export const NoRecords = ({
   action,
   className,
   buttonVariant = "default",
+  icon = <ExclamationCircle className="text-ui-fg-subtle" />,
 }: NoRecordsProps) => {
   const { t } = useTranslation()
 
   return (
     <div
       className={clx(
-        "flex h-[400px] w-full flex-col items-center justify-center gap-y-4",
+        "flex h-[150px] w-full flex-col items-center justify-center gap-y-4",
         className
       )}
     >
       <div className="flex flex-col items-center gap-y-3">
-        <ExclamationCircle className="text-ui-fg-subtle" />
+        {icon}
 
         <div className="flex flex-col items-center gap-y-1">
           <Text size="small" leading="compact" weight="plus">

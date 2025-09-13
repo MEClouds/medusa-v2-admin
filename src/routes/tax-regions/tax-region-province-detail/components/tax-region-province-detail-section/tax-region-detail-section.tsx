@@ -33,6 +33,7 @@ export const TaxRegionProvinceDetailSection = ({
           )
         }
       />
+
       {defaultRates.map((rate) => {
         return <TaxRateLine key={rate.id} taxRate={rate} isSublevelTaxRate />
       })}

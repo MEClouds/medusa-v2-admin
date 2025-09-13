@@ -129,7 +129,7 @@ const useDynamicSearchResults = (
     {
       q: debouncedSearch,
       limit,
-      fields: "id,title,sku",
+      fields: "id,title,sku,product_id",
     },
     {
       enabled: isAreaEnabled(currentArea, "productVariant"),

@@ -1,18 +1,21 @@
 import { Drawer, clx } from "@medusajs/ui"
 import { PropsWithChildren, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Path, useNavigate } from "react-router-dom"
+import { useStateAwareTo } from "../hooks/use-state-aware-to"
 import { RouteModalForm } from "../route-modal-form"
 import { RouteModalProvider } from "../route-modal-provider/route-provider"
 import { StackedModalProvider } from "../stacked-modal-provider"
 
 type RouteDrawerProps = PropsWithChildren<{
-  prev?: string
+  prev?: string | Partial<Path>
 }>
 
 const Root = ({ prev = "..", children }: RouteDrawerProps) => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [stackedModalOpen, onStackedModalOpen] = useState(false)
+
+  const to = useStateAwareTo(prev)
 
   /**
    * Open the modal when the component mounts. This
@@ -30,7 +33,7 @@ const Root = ({ prev = "..", children }: RouteDrawerProps) => {
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       document.body.style.pointerEvents = "auto"
-      navigate(prev, { replace: true })
+      navigate(to, { replace: true })
       return
     }
 
@@ -39,7 +42,7 @@ const Root = ({ prev = "..", children }: RouteDrawerProps) => {
 
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
-      <RouteModalProvider prev={prev}>
+      <RouteModalProvider prev={to}>
         <StackedModalProvider onOpenChange={onStackedModalOpen}>
           <Drawer.Content
             aria-describedby={undefined}

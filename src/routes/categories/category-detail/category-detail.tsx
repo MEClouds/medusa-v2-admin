@@ -7,7 +7,7 @@ import { categoryLoader } from "./loader"
 
 import { TwoColumnPageSkeleton } from "../../../components/common/skeleton"
 import { TwoColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 
 export const CategoryDetail = () => {
   const { id } = useParams()
@@ -16,7 +16,7 @@ export const CategoryDetail = () => {
     ReturnType<typeof categoryLoader>
   >
 
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   const { product_category, isLoading, isError, error } = useProductCategory(
     id!,

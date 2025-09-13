@@ -2,11 +2,20 @@ import { HttpTypes } from "@medusajs/types"
 import { Heading, Text, Tooltip, clx } from "@medusajs/ui"
 import ReactCountryFlag from "react-country-flag"
 
-import { ExclamationCircle, MapPin, Plus, Trash } from "@medusajs/icons"
+import {
+  ExclamationCircle,
+  MapPin,
+  Plus,
+  Trash,
+  PencilSquare,
+} from "@medusajs/icons"
 import { ComponentPropsWithoutRef, ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
-import { ActionMenu } from "../../../../../components/common/action-menu"
+import {
+  Action,
+  ActionMenu,
+} from "../../../../../components/common/action-menu"
 import { IconAvatar } from "../../../../../components/common/icon-avatar"
 import { getCountryByIso2 } from "../../../../../lib/data/countries"
 import {
@@ -107,7 +116,9 @@ export const TaxRegionCard = ({
                 {name}
               </Text>
             ) : (
-              <Heading>{name}</Heading>
+              <div className="flex items-center gap-x-2">
+                <Heading>{name}</Heading>
+              </div>
             )}
           </div>
         </div>
@@ -164,7 +175,9 @@ const TaxRegionCardActions = ({
 }) => {
   const { t } = useTranslation()
 
-  const to = taxRegion.parent_id
+  const hasParent = !!taxRegion.parent_id
+
+  const to = hasParent
     ? `/settings/tax-regions/${taxRegion.parent_id}`
     : undefined
   const handleDelete = useDeleteTaxRegionAction({ taxRegion, to })
@@ -187,12 +200,17 @@ const TaxRegionCardActions = ({
           : []),
         {
           actions: [
+            !hasParent && {
+              icon: <PencilSquare />,
+              label: t("actions.edit"),
+              to: `/settings/tax-regions/${taxRegion.id}/edit`,
+            },
             {
               icon: <Trash />,
               label: t("actions.delete"),
               onClick: handleDelete,
             },
-          ],
+          ].filter(Boolean) as unknown as Action[],
         },
       ]}
     />

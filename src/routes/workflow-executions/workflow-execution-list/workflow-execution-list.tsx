@@ -1,10 +1,10 @@
 import { WorkflowExecutionListTable } from "./components/workflow-execution-list-table"
 
 import { SingleColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
+import { useExtension } from "../../../providers/extension-provider"
 
 export const WorkflowExcecutionList = () => {
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   return (
     <SingleColumnPage

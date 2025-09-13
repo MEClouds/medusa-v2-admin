@@ -525,18 +525,22 @@
     "fields": {
       "title": {
         "label": "Título",
-        "hint": "Dê ao seu produto um título curto e claro.<0/>50-60 caracteres é o comprimento recomendado para motores de busca."
+        "hint": "Dê ao seu produto um título curto e claro.<0/>50-60 caracteres é o comprimento recomendado para motores de busca.",
+        "placeholder": "Jaqueta de inverno"
       },
       "subtitle": {
-        "label": "Subtítulo"
+        "label": "Subtítulo",
+        "placeholder": "Quente e aconchegante"
       },
       "handle": {
         "label": "Identificador",
-        "tooltip": "O identificador é usado para referenciar o produto na sua vitrine. Se não especificado, o identificador será gerado a partir do título do produto."
+        "tooltip": "O identificador é usado para referenciar o produto na sua vitrine. Se não especificado, o identificador será gerado a partir do título do produto.",
+        "placeholder": "jaqueta-de-inverno"
       },
       "description": {
         "label": "Descrição",
-        "hint": "Dê ao seu produto uma descrição curta e clara.<0/>120-160 caracteres é o comprimento recomendado para motores de busca."
+        "hint": "Dê ao seu produto uma descrição curta e clara.<0/>120-160 caracteres é o comprimento recomendado para motores de busca.",
+        "placeholder": "Uma jaqueta quente e aconchegante"
       },
       "discountable": {
         "label": "Descontável",

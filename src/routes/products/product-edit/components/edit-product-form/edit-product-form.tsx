@@ -6,15 +6,13 @@ import { HttpTypes } from "@medusajs/types"
 import { Form } from "../../../../../components/common/form"
 import { SwitchBox } from "../../../../../components/common/switch-box"
 import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
-import { useExtendableForm } from "../../../../../extensions/forms/hooks"
+import { useExtendableForm } from "../../../../../dashboard-app/forms/hooks"
 import { useUpdateProduct } from "../../../../../hooks/api/products"
 import { transformNullableFormData } from "../../../../../lib/form-helpers"
 
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import {
-  FormExtensionZone,
-  useDashboardExtension,
-} from "../../../../../extensions"
+import { FormExtensionZone } from "../../../../../dashboard-app"
+import { useExtension } from "../../../../../providers/extension-provider"
 
 type EditProductFormProps = {
   product: HttpTypes.AdminProduct
@@ -34,7 +32,7 @@ export const EditProductForm = ({ product }: EditProductFormProps) => {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
 
-  const { getFormFields, getFormConfigs } = useDashboardExtension()
+  const { getFormFields, getFormConfigs } = useExtension()
   const fields = getFormFields("product", "edit")
   const configs = getFormConfigs("product", "edit")
 

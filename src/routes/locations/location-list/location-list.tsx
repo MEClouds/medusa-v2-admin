@@ -1,19 +1,17 @@
-import { ShoppingBag, TriangleRightMini } from "@medusajs/icons"
-import { Container, Heading, Text } from "@medusajs/ui"
+import { ShoppingBag, TruckFast } from "@medusajs/icons"
+import { Container, Heading } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
-import { Link, useLoaderData } from "react-router-dom"
+import { useLoaderData } from "react-router-dom"
 
 import { useStockLocations } from "../../../hooks/api/stock-locations"
 import LocationListItem from "./components/location-list-item/location-list-item"
 import { LOCATION_LIST_FIELDS } from "./constants"
 import { shippingListLoader } from "./loader"
 
-import { ReactNode } from "react"
-import { IconAvatar } from "../../../components/common/icon-avatar"
-import { TwoColumnPage } from "../../../components/layout/pages"
-import { useDashboardExtension } from "../../../extensions"
-import { LocationListHeader } from "./components/location-list-header"
 import { SidebarLink } from "../../../components/common/sidebar-link/sidebar-link"
+import { TwoColumnPage } from "../../../components/layout/pages"
+import { useExtension } from "../../../providers/extension-provider"
+import { LocationListHeader } from "./components/location-list-header"
 
 export function LocationList() {
   const initialData = useLoaderData() as Awaited<
@@ -31,7 +29,7 @@ export function LocationList() {
     { initialData }
   )
 
-  const { getWidgets } = useDashboardExtension()
+  const { getWidgets } = useExtension()
 
   if (isError) {
     throw error
@@ -40,10 +38,10 @@ export function LocationList() {
   return (
     <TwoColumnPage
       widgets={{
-        after: getWidgets("location.details.after"),
-        before: getWidgets("location.details.before"),
-        sideAfter: getWidgets("location.details.side.after"),
-        sideBefore: getWidgets("location.details.side.before"),
+        after: getWidgets("location.list.after"),
+        before: getWidgets("location.list.before"),
+        sideAfter: getWidgets("location.list.side.after"),
+        sideBefore: getWidgets("location.list.side.before"),
       }}
       showJSON
     >
@@ -78,6 +76,14 @@ const LinksSection = () => {
           "stockLocations.sidebar.shippingProfiles.description"
         )}
         icon={<ShoppingBag />}
+      />
+      <SidebarLink
+        to="/settings/locations/shipping-option-types"
+        labelKey={t("stockLocations.sidebar.shippingOptionTypes.label")}
+        descriptionKey={t(
+          "stockLocations.sidebar.shippingOptionTypes.description"
+        )}
+        icon={<TruckFast />}
       />
     </Container>
   )

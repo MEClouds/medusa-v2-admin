@@ -74,21 +74,37 @@ export const InfiniteList = <
     // Define the new observers after we stop fetching
     if (!isFetching) {
       // Define the new observers after paginating
-      startObserver.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasPreviousPage) {
-          fetchPreviousPage()
+      startObserver.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasPreviousPage) {
+            startObserver.current?.disconnect()
+            fetchPreviousPage()
+          }
+        },
+        {
+          threshold: 0.5,
         }
-      })
+      )
 
-      endObserver.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasNextPage) {
-          fetchNextPage()
+      endObserver.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasNextPage) {
+            endObserver.current?.disconnect()
+            fetchNextPage()
+          }
+        },
+        {
+          threshold: 0.5,
         }
-      })
+      )
 
       // Register the new observers to observe the new first and last children
-      startObserver.current?.observe(parentRef.current!.firstChild as Element)
-      endObserver.current?.observe(parentRef.current!.lastChild as Element)
+      if (parentRef.current?.firstChild) {
+        startObserver.current?.observe(parentRef.current.firstChild as Element)
+      }
+      if (parentRef.current?.lastChild) {
+        endObserver.current?.observe(parentRef.current.lastChild as Element)
+      }
     }
 
     // Clear the old observers

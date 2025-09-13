@@ -43,6 +43,7 @@
     "plusCount": "+ {{count}}",
     "plusCountMore": "还有 {{count}} 项",
     "areYouSure": "确定吗?",
+    "areYouSureDescription": "您即将删除 {{entity}} {{title}}。此操作无法撤消。",
     "noRecordsFound": "未找到记录",
     "typeToConfirm": "请输入 {val} 以确认:",
     "noResultsTitle": "无结果",
@@ -349,6 +350,7 @@
     "backToDashboard": "返回仪表板"
   },
   "addresses": {
+    "title": "标题",
     "shippingAddress": {
       "header": "配送地址",
       "editHeader": "编辑配送地址",
@@ -537,22 +539,30 @@
     "fields": {
       "title": {
         "label": "标题",
-        "hint": "为您的产品提供一个简短明确的标题。<0/>搜索引擎推荐的长度是 50-60 个字符。"
+        "hint": "为您的产品提供一个简短明确的标题。<0/>搜索引擎推荐的长度是 50-60 个字符。",
+        "placeholder": "冬季夹克"
       },
       "subtitle": {
-        "label": "副标题"
+        "label": "副标题",
+        "placeholder": "温暖舒适"
       },
       "handle": {
         "label": "标识",
-        "tooltip": "标识用于在您的店面引用产品。如果未指定,将根据产品标题生成标识。"
+        "tooltip": "标识用于在您的店面引用产品。如果未指定,将根据产品标题生成标识。",
+        "placeholder": "冬衣"
       },
       "description": {
         "label": "描述",
-        "hint": "为您的产品提供一个简短明确的描述。<0/>搜索引擎推荐的长度是 120-160 个字符。"
+        "hint": "为您的产品提供一个简短明确的描述。<0/>搜索引擎推荐的长度是 120-160 个字符。",
+        "placeholder": "一件温暖舒适的外套"
       },
       "discountable": {
         "label": "可打折",
         "hint": "取消选中时,折扣将不会应用于此产品"
+      },
+      "shipping_profile": {
+        "label": "运输概况",
+        "hint": "将产品连接到运输配置文件"
       },
       "type": {
         "label": "类型"
@@ -599,7 +609,7 @@
       },
       "variants": {
         "label": "产品变体",
-        "hint": "未选中的变体将不会被创建,���排序将影响变体在前端的排序方式。"
+        "hint": "未选中的变体将不会被创建,此排序将影响变体在前端的排序方式。"
       },
       "mid_code": {
         "label": "MID 代码"
@@ -632,7 +642,7 @@
           "inventoryKit": "显示库存项目"
         },
         "inventoryKit": "库存套件",
-        "inventoryKitHint": "此变体是否由���个库存项目组成？",
+        "inventoryKitHint": "此变体是否由多个库存项目组成？",
         "validation": {
           "itemId": "请选择库存项目。",
           "quantity": "数量为必填项。请输入一个正数。"
@@ -681,6 +691,20 @@
         "alreadyManagedWithSku": "此库存项目已可在 {{title}} ({{sku}}) 下编辑。"
       }
     },
+    "shippingProfile": {
+      "header": "运输配置",
+      "edit": {
+        "header": "运输配置",
+        "toasts": {
+          "success": "已成功更新 {{title}} 的运输资料。"
+        }
+      },
+      "create": {
+        "errors": {
+          "required": "需要运输资料"
+        }
+      }
+    },
     "toasts": {
       "delete": {
         "success": {
@@ -704,7 +728,7 @@
     "deleteWarning": "您即将删除系列 {{title}}。此操作无法撤销。",
     "removeSingleProductWarning": "您即将从系列中移除产品 {{title}}。此操作无法撤销。",
     "removeProductsWarning_one": "您即将从系列中移除 {{count}} 个产品。此操作无法撤销。",
-    "removeProductsWarning_other": "您即将从系列中移除 {{count}} 个产品。此��作无法撤销。",
+    "removeProductsWarning_other": "您即将从系列中移除 {{count}} 个产品。此操作无法撤销。",
     "products": {
       "list": {
         "noRecordsMessage": "系列中没有产品。"
@@ -791,8 +815,10 @@
     "locationLevels": "位置",
     "associatedVariants": "关联变体",
     "manageLocations": "管理位置",
+    "manageLocationQuantity": "管理位置数量",
     "deleteWarning": "您即将删除一个库存项目。此操作无法撤消。",
     "editItemDetails": "编辑项目详情",
+    "quantityAcrossLocations": "{{quantity}} 分布于 {{locations}} 个地点",
     "create": {
       "title": "创建库存项目",
       "details": "详情",
@@ -913,7 +939,28 @@
     },
     "registered": "已注册",
     "guest": "访客",
-    "hasAccount": "拥有账户"
+    "hasAccount": "拥有账户",
+    "addresses": {
+      "title": "地址",
+      "fields": {
+        "addressName": "地址名称",
+        "address1": "地址1",
+        "address2": "地址2",
+        "city": "城市",
+        "province": "省份",
+        "postalCode": "邮政编码",
+        "country": "国家",
+        "phone": "电话",
+        "company": "公司",
+        "countryCode": "国家代码",
+        "provinceCode": "省份代码"
+      },
+      "create": {
+        "header": "创建地址",
+        "hint": "为客户创建新地址。",
+        "successToast": "地址创建成功。"
+      }
+    }
   },
   "customerGroups": {
     "domain": "客户群组",
@@ -1092,7 +1139,7 @@
       "sendNotificationHint": "通知客户关于退货。",
       "returnTotal": "退货总计",
       "inboundTotal": "入库总计",
-      "refundAmount": "退款金额",
+      "estDifference": "估计差异",
       "outstandingAmount": "未结金额",
       "reason": "原因",
       "reasonHint": "选择客户想要退货的原因。",
@@ -1249,6 +1296,8 @@
     "fulfillment": {
       "cancelWarning": "您即将取消履行。此操作无法撤消。",
       "markAsDeliveredWarning": "您即将将履行标记为已送达。此操作无法撤消。",
+      "differentOptionSelected": "所选的运输方式与客户选择的不同。",
+      "disabledItemTooltip": "您选择的配送方式不允许配送此商品",
       "unfulfilledItems": "未履行商品",
       "statusLabel": "履行状态",
       "statusTitle": "履行状态",
@@ -1261,6 +1310,7 @@
       "available": "可用",
       "inStock": "有库存",
       "markAsShipped": "标记为已发货",
+      "markAsPickedUp": "标记为已取走",
       "markAsDelivered": "标记为已送达",
       "itemsToFulfillDesc": "选择要履行的商品和数量",
       "locationDescription": "选择您想要从哪个位置履行商品。",
@@ -1269,7 +1319,9 @@
       "error": {
         "wrongQuantity": "只有一件商品可供履行",
         "wrongQuantity_other": "数量应该在 1 和 {{number}} 之间",
-        "noItems": "没有要履行的商品。"
+        "noItems": "没有要履行的商品。",
+        "noShippingOption": "需要运输选项",
+        "noLocation": "位置为必填项"
       },
       "status": {
         "notFulfilled": "未履行",
@@ -1288,7 +1340,8 @@
         "created": "履行创建成功",
         "canceled": "履行已成功取消",
         "fulfillmentShipped": "无法取消已发货的履行",
-        "fulfillmentDelivered": "履行已成功标记为已送达"
+        "fulfillmentDelivered": "履行已成功标记为已送达",
+        "fulfillmentPickedUp": "订单已标记为已成功领取"
       },
       "trackingLabel": "追踪",
       "shippingFromLabel": "发货地",
@@ -1495,7 +1548,13 @@
       "connectedTo": "已连接 {{total}} 个销售渠道中的 {{count}} 个",
       "noChannels": "该位置未连接任何销售渠道。",
       "action": "连接销售渠道",
-      "successToast": "销售渠道更新成功。"
+      "successToast": "销售渠道更新成功。",
+      "hint": "管理与此位置相连的销售渠道。"
+    },
+    "pickupOptions": {
+      "edit": {
+        "header": "编辑取货选项"
+      }
     },
     "shippingOptions": {
       "create": {
@@ -1504,6 +1563,12 @@
           "hint": "创建新的配送选项以定义如何从此位置发货产品。",
           "label": "配送选项",
           "successToast": "配送选项 {{name}} 创建成功。"
+        },
+        "pickup": {
+          "header": "为 {{zone}} 创建自提选项",
+          "hint": "创建新的自提选项以定义如何从此位置自提产品。",
+          "label": "自提选项",
+          "successToast": "自提选项 {{name}} 创建成功。"
         },
         "returns": {
           "header": "为 {{zone}} 创建退货选项",
@@ -1568,6 +1633,8 @@
         "count": {
           "shipping_one": "{{count}} 个配送选项",
           "shipping_other": "{{count}} 个配送选项",
+          "pickup_one": "{{count}} 个自提选项",
+          "pickup_other": "{{count}} 个自提选项",
           "returns_one": "{{count}} 个退货选项",
           "returns_other": "{{count}} 个退货选项"
         },
@@ -1576,7 +1643,7 @@
           "options": {
             "fixed": {
               "label": "固定",
-              "hint": "配��选项的价格是固定的,不会根据订单内容变化。"
+              "hint": "配送选项的价格是固定的,不会根据订单内容变化。"
             },
             "calculated": {
               "label": "计算",
@@ -1651,10 +1718,15 @@
       "header": "创建税收地区",
       "hint": "创建新的税收地区以定义特定国家的税率。",
       "errors": {
-        "rateIsRequired": "创建默认税率时需要提供税率。",
-        "nameIsRequired": "创建默认税率时需要提供名称。"
+        "missingProvider": "创建税收地区时需要提供商。",
+        "missingCountry": "创建税收地区时需要国家。"
       },
       "successToast": "税收地区创建成功。"
+    },
+    "edit": {
+      "header": "编辑税收地区",
+      "hint": "编辑税收地区详情。",
+      "successToast": "税收地区更新成功。"
     },
     "province": {
       "header": "省份",
@@ -1662,6 +1734,9 @@
         "header": "创建省份税收地区",
         "hint": "创建新的税收地区以定义特定省份的税率。"
       }
+    },
+    "provider": {
+      "header": "税务提供商"
     },
     "state": {
       "header": "州",
@@ -1788,6 +1863,7 @@
       },
       "taxRate": "税率",
       "taxCode": "税收代码",
+      "taxProvider": "税务提供商",
       "targets": {
         "label": "目标",
         "hint": "选择此税率将应用的目标。",
@@ -2299,6 +2375,8 @@
     "editStore": "编辑商店",
     "defaultCurrency": "默认货币",
     "defaultRegion": "默认地区",
+    "defaultSalesChannel": "默认销售渠道",
+    "defaultLocation": "默认位置",
     "swapLinkTemplate": "交换链接模板",
     "paymentLinkTemplate": "支付链接模板",
     "inviteLinkTemplate": "邀请链接模板",
@@ -2402,7 +2480,6 @@
       "createTaxRate": "创建税率",
       "createTaxRateHint": "为地区创建新的税率。",
       "deleteRateDescription": "您即将删除税率 {{name}}。此操作无法撤销。",
-      "editTaxRate": "编辑税率",
       "editRateAction": "编辑费率",
       "editOverridesAction": "编辑覆盖",
       "editOverridesTitle": "编辑税率覆盖",
@@ -2445,6 +2522,16 @@
   "salesChannels": {
     "domain": "销售渠道",
     "subtitle": "管理在线和离线销售渠道。",
+    "list": {
+      "empty": {
+        "heading": "未找到销售渠道",
+        "description": "创建销售渠道后，它将显示在这里。"
+      },
+      "filtered": {
+        "heading": "无搜索结果",
+        "description": "没有符合当前筛选条件的销售渠道。"
+      }
+    },
     "createSalesChannel": "创建销售渠道",
     "createSalesChannelHint": "创建新的销售渠道以销售您的产品。",
     "enabledHint": "指定销售渠道是否启用。",
@@ -2749,7 +2836,9 @@
     "added": "已添加",
     "removed": "已移除",
     "from": "从",
-    "to": "至"
+    "to": "至",
+    "beaware": "请注意",
+    "loading": "加载中"
   },
   "fields": {
     "amount": "金额",

@@ -13,7 +13,10 @@ export const ProductTypeGeneralSection = ({
   productType,
 }: ProductTypeGeneralSectionProps) => {
   const { t } = useTranslation()
-  const handleDelete = useDeleteProductTypeAction(productType.id)
+  const handleDelete = useDeleteProductTypeAction(
+    productType.id,
+    productType.value
+  )
 
   return (
     <Container className="flex items-center justify-between">
